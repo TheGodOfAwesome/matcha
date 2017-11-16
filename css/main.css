@@ -1,0 +1,15 @@
+#register-group {
+    padding-right: 10;
+}
+
+#login-group {
+    padding-left: 10; 
+}
+
+FOOTER {
+    bottom:0;
+    margin:0px auto;
+    position:absolute;
+    text-align:center;
+    width:100%;
+}
