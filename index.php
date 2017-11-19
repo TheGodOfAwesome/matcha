@@ -5,7 +5,7 @@
 // Start Session
 session_start();
 
-/*if(!empty($_SESSION['name'])) { 
+if(!empty($_SESSION['name'])) { 
 
     if(isset($_SESSION['email'])) {
 
@@ -15,11 +15,11 @@ session_start();
 
         if($email != "" && $status == "logged in")
         {
-            header("Location: camagru.php");
+            header("Location: matcha.php");
             exit();
         }
     }
-}*/
+}
 
 // check Register request
 if (!empty($_POST['btnRegister'])) {
@@ -83,7 +83,7 @@ if (!empty($_POST['btnRegister'])) {
                     // Your message
                     $message="Your Confirmation link \r\n";
                     $message.="Click on this link to activate your account \r\n";
-                    $message.="http://localhost:8080/match/inc/confirmation.php?passkey=$confirm_code";
+                    $message.="http://127.0.0.1:8080/matcha/inc/confirmation.php?passkey=$confirm_code";
     
                     // send email
                     $sentmail = mail($to,$subject,$message,$header);
@@ -135,12 +135,8 @@ if (!empty($_POST['btnLogin'])) {
 
                     $_SESSION['name'] = $name;
                     $_SESSION['email'] = $email;
-                    $_SESSION['overlay'] = 1;
-                    $_SESSION['gallery_count'] = 0;
-                    $_SESSION['gallery_start'] = 0;
-                    $_SESSION['gallery_end'] = 0;
                     $_SESSION['status'] = "logged in";
-                    header("Location: camagru.php");
+                    header("Location: matcha.php");
                 } else {
                     echo "Your account is not Activated! Check your email for activation link." . "<br>";
                 }
