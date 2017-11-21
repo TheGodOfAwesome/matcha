@@ -1,6 +1,6 @@
 <?php
 
-    include './config/conn.php';
+include './config/conn.php';
 
 // Start Session
 session_start();
@@ -18,88 +18,6 @@ if(!empty($_SESSION['name'])) {
             header("Location: matcha.php");
             exit();
         }
-    }
-}
-
-// check Register request
-if (!empty($_POST['btnRegister'])) {
-    if ($_POST['name'] == "") {
-        $register_error_message = 'Name field is required!';
-        echo $register_error_message . "<br>";
-    } else if ($_POST['email'] == "") {
-        $register_error_message = 'Email field is required!';
-        echo $register_error_message . "<br>";
-    } else if ($_POST['password'] == "") {
-        $register_error_message = 'Password field is required!';
-        echo $register_error_message . "<br>";
-    } else if ($_POST['repeat_password'] == "") {
-        $register_error_message = 'Repeat Password field is required!';
-        echo $register_error_message . "<br>";
-    } else if ($_POST['repeat_password'] != $_POST['password']) {
-        $register_error_message = 'Passwords don\'t match!';
-        echo $register_error_message . "<br>";
-    } else if (strlen($_POST['repeat_password']) < 6) {
-        $register_error_message = 'Password must be at least 6 characters!';
-        echo $register_error_message . "<br>";
-    } else if (!preg_match('/[^a-zA-Z]+/',($_POST['repeat_password']))) {
-        $register_error_message = 'Passwords must have at least one special character!';
-        echo $register_error_message . "<br>";
-    } else {
-        try {
-        	$name = $_POST['name'];
-            $email = $_POST['email'];
-            $gender = $_POST['gender'];
-        	$password = $_POST['password'];
-            $enc_password = hash('sha256', $password);
-            $confirm_code=md5(uniqid(rand()));
-            
-            // prepare sql and bind parameters
-            $stmt = $conn->prepare("INSERT INTO users(name, email, gender, password, confirmation_code) 
-            VALUES(:name, :email, :gender, :password, :confirmation_code)");
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':gender', $gender);
-            $stmt->bindParam(':password', $enc_password);
-            $stmt->bindParam(':confirmation_code', $confirm_code);
-
-            $stmt1 = $conn->prepare("SELECT id FROM users WHERE email=:email");
-            $stmt1->bindParam(':email', $email);
-            $stmt1->execute();
-            if ($stmt1->rowCount() > 0) {
-                echo "Email Is Already In Use! <br>";
-            } else{
-                $stmt->execute();
-                echo $gender . "</br>";
-                echo "Account Created Login To Continue! <br>";
-
-                // ---------------- SEND MAIL FORM ----------------
-                    
-                    // send e-mail to ...
-                    $to=$email;
-                    // Your subject
-                    $subject="Your Matcha signup confirmation link here";
-                    // From
-                    $header="from: Matcha";
-                    // Your message
-                    $message="Your Confirmation link \r\n";
-                    $message.="Click on this link to activate your account \r\n";
-                    $message.="http://127.0.0.1:8080/matcha/inc/confirmation.php?passkey=$confirm_code";
-    
-                    // send email
-                    $sentmail = mail($to,$subject,$message,$header);
-
-                    // if your email succesfully sent
-                    if($sentmail){
-                        echo "Your Confirmation link Has Been Sent To Your Email Address.";
-                    } else {
-                        echo "Cannot send Confirmation link to your e-mail address";
-                    }
-                
-            }
-		} catch (PDOException $e) {
-			echo "error: " . $sql . "<br>" . $e->getMessage();
-		}
-        $conn = null;
     }
 }
 
@@ -136,14 +54,37 @@ if (!empty($_POST['btnLogin'])) {
                     $_SESSION['name'] = $name;
                     $_SESSION['email'] = $email;
                     $_SESSION['status'] = "logged in";
-                    header("Location: matcha.php");
+                    header("Location: updateprofile.php");
                 } else {
                     echo "Your account is not Activated! Check your email for activation link." . "<br>";
                 }
             } else {
-                echo "Incorrect user credentials, please try again!" . "<br>";
-            }
+                // prepare sql and bind parameters
+                $name = $email;
+                $stmt4 = $conn->prepare("SELECT * FROM users WHERE name=:name AND password=:password");
+                $stmt4->bindParam(':name', $name);
+                $stmt4->bindParam(':password', $enc_password);
+                $stmt4->execute();
+                if ($stmt4->rowCount() > 0) {
+                    $stmt5 = $conn->prepare("SELECT email FROM users WHERE name=:name AND status=:status");
+                    $stmt5->bindParam(':name', $name);
+                    $stmt5->bindParam(':status', $status);
+                    $stmt5->execute();
+                    if ($stmt5->rowCount() > 0) {
+                        $row = $stmt5->fetch();
+                        $email = $row['email'];
 
+                        $_SESSION['name'] = $name;
+                        $_SESSION['email'] = $email;
+                        $_SESSION['status'] = "logged in";
+                        header("Location: updateprofile.php");
+                    } else {
+                        echo "Your account is not Activated! Check your email for activation link." . "<br>";
+                    }
+                } else {
+                    echo "Incorrect user credentials, please try again!" . "<br>";
+                }
+            }
 		} catch (PDOException $e) {
 			echo "error: " . $e->getMessage();
 		}
@@ -154,67 +95,61 @@ if (!empty($_POST['btnLogin'])) {
 
 ?>
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>Matcha</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Index CSS -->
-    <link rel="stylesheet" href="./css/main.css">
-  
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-  </head>
-  <body align="center">
-
-    <div class="container" >
-        <div class="row">
-            <div class="register-group">
-                <h4>Register</h4>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Matcha</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/animate.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/font.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/li-scroller.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/slick.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/jquery.fancybox.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/theme.css">
+<link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+<!--[if lt IE 9]>
+<script src="../assets/js/html5shiv.min.js"></script>
+<script src="../assets/js/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<div id="preloader">
+  <div id="status">&nbsp;</div>
+</div>
+<a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
+<div class="container">
+  <header id="header">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="header_top">
+          <div class="header_top_left">
+            <ul class="top_nav">
+              <li><a href="./index.php">Home</a></li>
+              <li><a href="./signup.php">Sign Up</a></li>
+            </ul>
+          </div>
+          <div class="header_top_right">
+            <a href="./inc/logout.php"><p>Logout</p></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section id="contentSection">
+    <div class="row">
+      <div class="col-lg-8 col-md-8 col-sm-8">
+        <div class="left_content">
+          <div class="contact_area">
+            <h2>Login</h2>
+            <p>Login to your account. Or create a new account by clicking sign up.</p>
                 <form action="index.php" method="post">
                     <div class="form-group">
-                        <label for="">Username</label>
-                        <input type="text" name="name" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Email</label>
-                        <input type="email" name="email" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Gender</label>
-                        <select name="gender">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="undefined">Undefined</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Password</label>
-                        <input type="password" name="password" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Repeat Password</label>
-                        <input type="password" name="repeat_password" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" name="btnRegister" class="btn btn-primary" value="Register"/>
-                    </div>
-                </form>
-            </div>
-            <div>
-                    &nbsp;
-                    &nbsp;
-                    &nbsp;
-            </div>
-            <div class="login-group">
-                <h4>Login</h4>
-                <form action="index.php" method="post">
-                    <div class="form-group">
-                        <label for="">Email</label>
-                        <input type="email" name="email" class="form-control"/>
+                        <label for="">Username/Email</label>
+                        <input type="text" name="email" class="form-control"/>
                     </div>
                     <div class="form-group">
                         <label for="">Password</label>
@@ -227,18 +162,32 @@ if (!empty($_POST['btnLogin'])) {
                         <input type="submit" name="btnLogin" class="btn btn-primary" value="Login"/>
                     </div>
                 </form>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </section>
+  <footer id="footer">
+    <div class="footer_bottom">
+      <p class="copyright">Copyright &copy; 2017 <a href="index.php">Matcha</a></p>
+      <p class="developer">Developed By kmuvezwa</p>
+    </div>
+  </footer>
+</div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
-    <FOOTER align="center">
-		<p1>© kmuvezwa 2017</p1>
-	</FOOTER>
-  </body>
+<script src="./assets/js/jquery.min.js"></script> 
+<script src="./assets/js/wow.min.js"></script> 
+<script src="./assets/js/bootstrap.min.js"></script> 
+<script src="./assets/js/slick.min.js"></script> 
+<script src="./assets/js/jquery.li-scroller.1.0.js"></script> 
+<script src="./assets/js/jquery.newsTicker.min.js"></script> 
+<script src="./assets/js/jquery.fancybox.pack.js"></script> 
+<script src="./assets/js/custom.js"></script>
+</body>
 </html>

@@ -23,12 +23,13 @@ $sql2 = "CREATE TABLE IF NOT EXISTS users ("
 . "name varchar(50),"
 . "email varchar(50),"
 . "gender varchar(7),"
+. "dateofbirth date,"
 . "bio varchar(280),"
 . "rating int,"
-. "address varchar(5000),"
-. "neighbourhood varchar(5000),"
-. "city varchar(5000),"
-. "country varchar(5000),"
+. "address varchar(1000),"
+. "neighbourhood varchar(1000),"
+. "city varchar(500),"
+. "country varchar(500),"
 . "geolocation varchar(50),"
 . "interests varchar(280),"
 . "preference varchar(7),"
@@ -79,6 +80,24 @@ try {
 	echo "Comments created successfully <br>";
 } catch (PDOException $e) {
 	echo "error: " . $sql4 . "<br>" . $e->getMessage();
+}
+
+$sql5 = "CREATE TABLE IF NOT EXISTS log ("
+. "log_id int NOT NULL AUTO_INCREMENT,"
+. "log_user_id int,"
+. "log_user_name varchar(100),"
+. "log_description varchar(50),"
+. "log_action varchar(50),"
+. "log_action_recipient_id int,"
+. "log_action_recipient_name varchar(100),"
+. "log_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
+. "PRIMARY KEY (log_id));";
+
+try {
+	$conn->exec($sql5);
+	echo "Comments created successfully <br>";
+} catch (PDOException $e) {
+	echo "error: " . $sql5 . "<br>" . $e->getMessage();
 }
 
 $conn = null;
