@@ -49,18 +49,33 @@ if (!empty($_POST['btnRegister'])) {
         	$name = $_POST['name'];
             $email = $_POST['email'];
             $gender = $_POST['gender'];
+            $rating = 0;
         	$password = $_POST['password'];
             $enc_password = hash('sha256', $password);
             $confirm_code=md5(uniqid(rand()));
             
             // prepare sql and bind parameters
-            $stmt = $conn->prepare("INSERT INTO users(name, email, gender, password, confirmation_code) 
-            VALUES(:name, :email, :gender, :password, :confirmation_code)");
+            $stmt = $conn->prepare("INSERT INTO users(name, email, gender, rating, password, confirmation_code) 
+            VALUES(:name, :email, :gender, :rating, :password, :confirmation_code)");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':gender', $gender);
+            $stmt->bindParam(':rating', $rating);
             $stmt->bindParam(':password', $enc_password);
             $stmt->bindParam(':confirmation_code', $confirm_code);
+
+            $target_dir = "./images/user_images/";
+            $image_name = "temp-profile.png";
+            $image_type = "profile";
+            $target_file = $target_dir . $image_name;
+
+            $stmt_uploadprofilepic = $conn->prepare("INSERT INTO images(image_name, image_type, image_creator, image_creator_email, image_url) 
+            VALUES(:image_name, :image_type, :image_creator, :image_creator_email, :image_url)");
+            $stmt_uploadprofilepic->bindParam(':image_name', $image_name);
+            $stmt_uploadprofilepic->bindParam(':image_type', $image_type);
+            $stmt_uploadprofilepic->bindParam(':image_creator', $name);
+            $stmt_uploadprofilepic->bindParam(':image_creator_email', $email);
+            $stmt_uploadprofilepic->bindParam(':image_url', $target_file);
 
             $stmt0 = $conn->prepare("SELECT id FROM users WHERE name=:name");
             $stmt0->bindParam(':name', $name);
@@ -98,6 +113,7 @@ if (!empty($_POST['btnRegister'])) {
                     // if your email succesfully sent
                     if($sentmail){
                         $stmt->execute();
+                        $stmt_uploadprofilepic->execute();
                         echo "Your Confirmation link Has Been Sent To Your Email Address.";
                     } else {
                         echo "Cannot send Confirmation link to your e-mail address";

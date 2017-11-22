@@ -1,5 +1,22 @@
 <?php
 
+  // Start Session
+  session_start();
+  
+  if(isset($_SESSION['email'])) {
+    $name = $_SESSION['name'];
+    $email = $_SESSION['email'];
+    $status = $_SESSION['status'];
+  }
+
+  include './config/conn.php';
+
+  if($name == "" || $email == "" || $status != "logged in")
+  {
+      header("Location: ./index.php");
+      exit();
+  }
+
 ?>
 
 
@@ -38,7 +55,7 @@
             <ul class="top_nav">
               <li><a href="#">Home</a></li>
               <li><a href="#">Messages</a></li>
-              <li><a href="#">Edit Profile</a></li>
+              <li><a href="./updateprofile.php">Edit Profile</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>
@@ -56,7 +73,7 @@
           <div class="single_iteam"> <a href="pages/single_page.html"> <img src="images/slider_img4.jpg" alt=""></a>
             <div class="slider_article">
               <h2><a class="slider_tittle" href="pages/single_page.html">Fusce eu nulla semper porttitor felis sit amet</a></h2>
-              <p>Nunc tincidunt, elit non cursus euismod, lacus augue ornare metus, egestas imperdiet nulla nisl quis mauris. Suspendisse a pharetra urna. Morbi dui...</p>
+              <p>Nunc tincidunt, elit noon cursus euismod, lacus augue ornare metus, egestas imperdiet nulla nisl quis mauris. Suspendisse a pharetra urna. Morbi dui...</p>
             </div>
           </div>
           <div class="single_iteam"> <a href="pages/single_page.html"> <img src="images/slider_img2.jpg" alt=""></a>
@@ -80,34 +97,63 @@
         </div>
             <div class="single_post_content_left">
               <ul class="business_catgnav">
-                <li>
-                  <figure class="bsbig_fig  wow fadeInDown"> <a class="featured_img" href="pages/single_page.html"> <img src="images/featured_img1.jpg" alt=""> <span class="overlay"></span> </a>
-                    <figcaption> <a href="pages/single_page.html">Proin rhoncus consequat nisl eu ornare mauris</a> </figcaption>
-                    <p>Nunc tincidunt, elit non cursus euismod, lacus augue ornare metus, egestas imperdiet nulla nisl quis mauris. Suspendisse a phare...</p>
-                  </figure>
-                </li>
+                <?php
+                  $path = "./images/user_images/";
+                  $type = "profile";
+                  $stmt_rating = $conn->prepare("SELECT * FROM users WHERE name=:name");
+                  $stmt_rating->bindValue(":name", $name);
+                  // initialise an array for the results 
+                  $user = array();
+                  if ($stmt_rating->execute()) {
+                    while ($row = $stmt_rating->fetch(PDO::FETCH_ASSOC)) {
+                      $user[] = $row;
+                      $image_num = $row['rating'];
+                      if ($image_num < 25) {
+                        $image_rat = 1;
+                        $rating_desc = "Newbie";
+                      } else if ($image_num < 100) {
+                        $image_rat = 2;
+                        $rating_desc = "Wildcard";
+                      } else if ($image_num < 1000) {
+                        $image_rat = 3;
+                        $rating_desc = "Cool Kid";
+                      } else if ($image_num < 10000) {
+                        $image_rat = 4;
+                        $rating_desc = "Prom King/Queen";
+                      }
+
+                      echo
+                      '<li>
+                      <figure class="bsbig_fig  wow fadeInDown"> <a class="featured_img" href="./pages/ratingdesc' . $image_rat . '.php"> <img src="./images/rating/heart' . $image_rat . '.png" alt=""> <span class="overlay"></span> </a>
+                        <figcaption> <a href="./pages/ratingdesc' . $image_rat . '.php"><h2> ' . $name . '\'s Rating </h2></a> </figcaption>
+                        <p> ' . $rating_desc . ' </p>
+                      </figure>
+                      </li>';
+                    }
+                  }
+                ?>
               </ul>
             </div>
             <div class="single_post_content_right">
               <ul class="spost_nav">
                 <li>
-                  <div class="media wow fadeInDown"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>
-                    <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 1</a> </div>
+                  <div class="media wow fadeInDown"> <a href="pages/ratingdesc1.php" class="media-left"> <img alt="" src="images/rating/heart1.png"> </a>
+                    <div class="media-body"> <a href="pages/ratingdesc1.php" class="catg_title"> The Newbies</a> </div>
                   </div>
                 </li>
                 <li>
-                  <div class="media wow fadeInDown"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img2.jpg"> </a>
-                    <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 2</a> </div>
+                  <div class="media wow fadeInDown"> <a href="pages/ratingdesc2.php" class="media-left"> <img alt="" src="images/rating/heart2.png"> </a>
+                    <div class="media-body"> <a href="pages/ratingdesc2.php" class="catg_title"> The Wildcard</a> </div>
                   </div>
                 </li>
                 <li>
-                  <div class="media wow fadeInDown"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>
-                    <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 3</a> </div>
+                  <div class="media wow fadeInDown"> <a href="pages/ratingdesc3.php" class="media-left"> <img alt="" src="images/rating/heart3.png"> </a>
+                    <div class="media-body"> <a href="pages/ratingdesc3.php" class="catg_title"> The Cool Kids</a> </div>
                   </div>
                 </li>
                 <li>
-                  <div class="media wow fadeInDown"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img2.jpg"> </a>
-                    <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 4</a> </div>
+                  <div class="media wow fadeInDown"> <a href="pages/ratingdesc4.php" class="media-left"> <img alt="" src="images/rating/heart4.png"> </a>
+                    <div class="media-body"> <a href="pages/ratingdesc4.php" class="catg_title"> The Prom King/Queen</a> </div>
                   </div>
                 </li>
               </ul>
@@ -116,7 +162,25 @@
       <div class="col-lg-4 col-md-4 col-sm-4">
         <div class="single_sidebar wow fadeInDown">
             <h2><span>Me</span></h2>
-            <a class="sideAdd" href="#"><img src="images/add_img.jpg" alt=""></a>
+            <?php
+              $path = "./images/user_images/";
+              $type = "profile";
+              $stmt_profilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator AND image_type=:image_type ORDER BY image_timestamp DESC");
+              $stmt_profilephoto->bindValue(":image_creator", $name);
+              $stmt_profilephoto->bindValue(":image_type", $type);
+              // initialise an array for the results 
+              $user_image = array();
+              if ($stmt_profilephoto->execute()) {
+                while ($row = $stmt_profilephoto->fetch(PDO::FETCH_ASSOC)) {
+                  $user_image[] = $row;
+                  $image_url = $row['image_name'];
+                  $url = $path . $image_url;
+                  //echo '<li><img src="./images/' . $image_url . '" width="150" height="150"></li>';
+                  echo '<a class="sideAdd" href="#"><img src=" ' . $url . '" alt=""></a>';
+                }
+              }
+            ?>
+
         </div>
         <div class="latest_post">
           <h2><span>Latest Matches</span></h2>
@@ -163,36 +227,25 @@
           <div class="single_post_content">
             <h2><span>My Photos</span></h2>
             <ul class="photograph_nav  wow fadeInDown">
-              <li>
-                <div class="photo_grid">
-                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href="images/photograph_img2.jpg" title="Photography Ttile 1"> <img src="images/photograph_img2.jpg" alt=""/></a> </figure>
-                </div>
-              </li>
-              <li>
-                <div class="photo_grid">
-                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href="images/photograph_img3.jpg" title="Photography Ttile 2"> <img src="images/photograph_img3.jpg" alt=""/> </a> </figure>
-                </div>
-              </li>
-              <li>
-                <div class="photo_grid">
-                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href="images/photograph_img4.jpg" title="Photography Ttile 3"> <img src="images/photograph_img4.jpg" alt=""/> </a> </figure>
-                </div>
-              </li>
-              <li>
-                <div class="photo_grid">
-                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href="images/photograph_img4.jpg" title="Photography Ttile 4"> <img src="images/photograph_img4.jpg" alt=""/> </a> </figure>
-                </div>
-              </li>
-              <li>
-                <div class="photo_grid">
-                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href="images/photograph_img2.jpg" title="Photography Ttile 5"> <img src="images/photograph_img2.jpg" alt=""/> </a> </figure>
-                </div>
-              </li>
-              <li>
-                <div class="photo_grid">
-                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href="images/photograph_img3.jpg" title="Photography Ttile 6"> <img src="images/photograph_img3.jpg" alt=""/> </a> </figure>
-                </div>
-              </li>
+            <?php
+              $path = "./images/user_images/";
+              $type = "profile";
+              $stmt_profilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator ORDER BY image_timestamp DESC");
+              $stmt_profilephoto->bindValue(":image_creator", $name);
+              // initialise an array for the results 
+              $user_image = array();
+              if ($stmt_profilephoto->execute()) {
+                while ($row = $stmt_profilephoto->fetch(PDO::FETCH_ASSOC)) {
+                  $user_image[] = $row;
+                  $image = $row['image_name'];
+                  $image_url = $row['image_name'] . "?image=" . $image;
+                  $url = $path . $image_url;
+                  echo '<li><div class="photo_grid">
+                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href=" ' . $url . ' " title=" ' . $image . ' "> <img src=" ' . $url . ' " alt=""/></a> </figure>
+                  </div></li>';
+                }
+              }
+            ?>
             </ul>
           </div>
         </div>
@@ -201,7 +254,7 @@
       <div class="col-lg-4 col-md-4 col-sm-4">
         <aside class="right_content">
           <div class="single_sidebar">
-            <h2><span>Popular Post</span></h2>
+            <h2><span>Messages</span></h2>
             <ul class="spost_nav">
               <li>
                 <div class="media wow fadeInDown"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>

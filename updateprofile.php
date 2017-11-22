@@ -1,19 +1,20 @@
 <?php
 
-include './config/conn.php';
-
 // Start Session
 session_start();
 
 if(isset($_SESSION['email'])) {
-  $name = $_SESSION['name'];
-  $email = $_SESSION['email'];
-  $status = $_SESSION['status'];
-
-  echo $name . "</br>";
-  echo $email . "</br>";
-  echo $status . "</br>";
+    $name = $_SESSION['name'];
+    $email = $_SESSION['email'];
+    $status = $_SESSION['status'];
+  
+    //echo $name . "</br>";
+    //echo $email . "</br>";
+    //echo $status . "</br>";
 }
+
+include './config/conn.php';
+include './inc/uploadphoto.php';
 
 if($name == "" || $email == "" || $status != "logged in")
 {
@@ -38,20 +39,9 @@ if (!empty($_POST['btnUpdate'])) {
             $address = $_POST['add'];
             $interests = $_POST['interests'];
             $neighbourhood = $_POST['hood'];
-            $preference = $_POST['preference'];
             $date = $_POST['date'];
             $month = $_POST['month'];
             $year = $_POST['year'];
-            $user_ip = "41.71.121.36";
-            $geolocation = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$user_ip"));
-            $country = $geo["geoplugin_countryName"];
-            $city = $geo["geoplugin_city"];
-
-            
-            //echo "userip " . $user_ip . "</br>";
-            //echo "geo " . $geolocation . "</br>";
-            //echo "country " .$country  . "</br>";
-            //echo "city " . $city. "</br>";
             
             if ($_POST['name'] != "") {
                 $stmt_name = $conn->prepare("UPDATE users SET name=:name
@@ -108,11 +98,22 @@ if (!empty($_POST['btnUpdate'])) {
             }
 
             if ($_POST['interests'] != "") {
-                $stmt_hood = $conn->prepare("UPDATE users SET interests=:interests
+                //$stmt_hood = $conn->prepare("UPDATE users SET interests=:interests  CONCAT(preference, 
+                //WHERE email=:email");
+                $stmt_hood = $conn->prepare("UPDATE users SET interests = CONCAT(interests, ',', :interests) 
                 WHERE email=:email");
                 $stmt_hood->bindParam(':interests', $interests);
                 $stmt_hood->bindParam(':email', $email);
                 $stmt_hood->execute();
+            }
+            
+            if ($_POST['preference'] != "pref") {
+                $preference = $_POST['preference'];
+                $stmt_preference = $conn->prepare("UPDATE users SET preference=:preference
+                WHERE email=:email");
+                $stmt_preference->bindParam(':preference', $preference);
+                $stmt_preference->bindParam(':email', $email);
+                $stmt_preference->execute();
             }
 
             if ($_POST['hood'] != "") {
@@ -127,22 +128,15 @@ if (!empty($_POST['btnUpdate'])) {
             preg_match('/Current IP Address: \[?([:.0-9a-fA-F]+)\]?/', $externalContent, $m);
             $externalIp = $m[1];
             $PublicIP = $externalIp;
+
+            $geolocation = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$PublicIP"));
+            $country = $geolocation["geoplugin_countryName"];
+            $city = $geolocation["geoplugin_city"];
+
             echo "Ext IP " . $PublicIP . "</br>";
-
-            /*$json  = file_get_contents("https://freegeoip.net/json/$PublicIP");
-            $json  =  json_decode($json ,true);
-            $country =  $json['country_name'];
             echo "Country " . $country . "</br>";
-            $region= $json['region_name'];
-            echo "Region " . $region . "</br>";
-            $city = $json['city'];
             echo "City " . $city . "</br>";
-            $geolocation = "41.71.121.36";*/
 
-            $user_ip = $PublicIP;
-            $geolocation = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$user_ip"));
-            $country = $geo["geoplugin_countryName"];
-            $city = $geo["geoplugin_city"];
             $stmt_location = $conn->prepare("UPDATE users SET city=:city, country=:country, geolocation=:geolocation 
             WHERE email=:email");
             $stmt_location->bindParam(':city', $city);
@@ -150,18 +144,6 @@ if (!empty($_POST['btnUpdate'])) {
             $stmt_location->bindParam(':geolocation', $geolocation);
             $stmt_location->bindParam(':email', $email);
             $stmt_location->execute();
-
-            $stmt_pref = $conn->prepare("SELECT id FROM users WHERE preference=:preference AND email=:email");
-            $stmt_pref->bindParam(':preference', $preference);
-            $stmt_pref->bindParam(':email', $email);
-            $stmt_pref->execute();
-            if ($stmt_pref->rowCount() < 0) {
-                $stmt_preference = $conn->prepare("UPDATE users SET preference=:preference
-                WHERE email=:email");
-                $stmt_preference->bindParam(':preference', $preference);
-                $stmt_preference->bindParam(':email', $email);
-                $stmt_preference->execute();
-            }
 
 		} catch (PDOException $e) {
 			echo "error: " . $sql . "<br>" . $e->getMessage();
@@ -330,6 +312,7 @@ if (!empty($_POST['btnUpdate'])) {
                     <div class="form-group">
                         <label for="">Sexual Preference</label>
                         <select name="preference">
+                            <option value="pref">Choose Preference</option>
                             <option value="undefined">Undefined</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
@@ -338,6 +321,11 @@ if (!empty($_POST['btnUpdate'])) {
                     <div class="form-group">
                         <input type="submit" name="btnUpdate" class="btn btn-primary" value="Update"/>
                     </div>
+                </form>
+                <form action="" method="POST" enctype="multipart/form-data">
+                     <b>Select new profile picture:</b>
+                    <input type="file" class="btn btn-primary" name="fileToUpload" id="fileToUpload">
+                    <input type="submit" class="btn btn-primary" value="Upload Profile Photo" name="submit">
                 </form>
           </div>
         </div>
