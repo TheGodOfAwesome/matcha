@@ -230,18 +230,19 @@
             <?php
               $path = "./images/user_images/";
               $type = "profile";
-              $stmt_profilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator ORDER BY image_timestamp DESC");
-              $stmt_profilephoto->bindValue(":image_creator", $name);
+              $stmt_photo = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator ORDER BY image_timestamp DESC");
+              $stmt_photo->bindValue(":image_creator", $name);
               // initialise an array for the results 
               $user_image = array();
-              if ($stmt_profilephoto->execute()) {
-                while ($row = $stmt_profilephoto->fetch(PDO::FETCH_ASSOC)) {
+              if ($stmt_photo->execute()) {
+                while ($row = $stmt_photo->fetch(PDO::FETCH_ASSOC)) {
                   $user_image[] = $row;
                   $image = $row['image_name'];
                   $image_url = $row['image_name'] . "?image=" . $image;
                   $url = $path . $image_url;
+                  $link = "./imageview.php?image=" . $image;
                   echo '<li><div class="photo_grid">
-                  <figure class="effect-layla"> <a class="fancybox-buttons" data-fancybox-group="button" href=" ' . $url . ' " title=" ' . $image . ' "> <img src=" ' . $url . ' " alt=""/></a> </figure>
+                  <figure class="effect-layla"> <a href=" ' . $link . ' " title=" ' . $image . ' "> <img src=" ' . $url . ' " alt=""/></a> </figure>
                   </div></li>';
                 }
               }

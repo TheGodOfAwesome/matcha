@@ -26,6 +26,12 @@ if (!empty($_POST['btnRegister'])) {
     if ($_POST['name'] == "") {
         $register_error_message = 'Name field is required!';
         echo $register_error_message . "<br>";
+    } else if ($_POST['fname'] == "") {
+        $register_error_message = 'first name field is required!';
+        echo $register_error_message . "<br>";
+    } else if ($_POST['lname'] == "") {
+        $register_error_message = 'last name field is required!';
+        echo $register_error_message . "<br>";
     } else if ($_POST['email'] == "") {
         $register_error_message = 'Email field is required!';
         echo $register_error_message . "<br>";
@@ -46,21 +52,27 @@ if (!empty($_POST['btnRegister'])) {
         echo $register_error_message . "<br>";
     } else {
         try {
-        	$name = $_POST['name'];
+            $fname = $_POST['fname'];
+            $lname = $_POST['lname'];
+            $fullname = $fname . " " . $lname;
+            $name = $_POST['name'];
             $email = $_POST['email'];
             $gender = $_POST['gender'];
             $rating = 0;
+            $imagecount = 0;
         	$password = $_POST['password'];
             $enc_password = hash('sha256', $password);
             $confirm_code=md5(uniqid(rand()));
             
             // prepare sql and bind parameters
-            $stmt = $conn->prepare("INSERT INTO users(name, email, gender, rating, password, confirmation_code) 
-            VALUES(:name, :email, :gender, :rating, :password, :confirmation_code)");
+            $stmt = $conn->prepare("INSERT INTO users(fullname, name, email, gender, rating, imagecount, password, confirmation_code) 
+            VALUES(:fullname, :name, :email, :gender, :rating, :imagecount, :password, :confirmation_code)");
+            $stmt->bindParam(':fullname', $fullname);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':gender', $gender);
             $stmt->bindParam(':rating', $rating);
+            $stmt->bindParam(':imagecount', $imagecount);
             $stmt->bindParam(':password', $enc_password);
             $stmt->bindParam(':confirmation_code', $confirm_code);
 
@@ -183,6 +195,14 @@ if (!empty($_POST['btnRegister'])) {
             <div class="form-group">
                 <label for="">Username</label>
                 <input type="text" name="name" class="form-control" placeholder="JohnDoer"/>
+            </div>
+            <div class="form-group">
+                <label for="">First Name</label>
+                <input type="text" name="fname" class="form-control" placeholder="John"/>
+            </div>
+            <div class="form-group">
+                <label for="">Last Name</label>
+                <input type="text" name="lname" class="form-control" placeholder="Doe"/>
             </div>
             <div class="form-group">
                 <label for="">Email</label>

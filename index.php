@@ -73,7 +73,7 @@ if (!empty($_POST['btnLogin'])) {
                     if ($stmt5->rowCount() > 0) {
                         $row = $stmt5->fetch();
                         $email = $row['email'];
-
+                        
                         $_SESSION['name'] = $name;
                         $_SESSION['email'] = $email;
                         $_SESSION['status'] = "logged in";

@@ -26,6 +26,7 @@ $sql2 = "CREATE TABLE IF NOT EXISTS users ("
 . "dateofbirth date,"
 . "bio varchar(280),"
 . "rating int,"
+. "imagecount int,"
 . "address varchar(1000),"
 . "neighbourhood varchar(1000),"
 . "city varchar(500),"
@@ -35,7 +36,9 @@ $sql2 = "CREATE TABLE IF NOT EXISTS users ("
 . "preference varchar(8),"
 . "password varchar(1000),"
 . "status varchar(50),"
+. "login_status varchar(7),"
 . "confirmation_code varchar(1000),"
+. "last_login_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
 . "PRIMARY KEY (id));";
 
 try {

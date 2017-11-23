@@ -1,5 +1,4 @@
 <?php
-
 // Start Session
 session_start();
 
@@ -19,10 +18,24 @@ if($name == "" || $email == "" || $status != "logged in")
 }
 
 $image=$_GET['image'];
+$_SESSION['image'] = $image;
 
-// check Update request
-if (!empty($_POST['btnUpdate'])) {
-  
+// check Delete request
+if (!empty($_POST['btnDelete'])) {
+  echo $_SESSION['image'] . "</br>" . "Test";
+  $image_name = $_SESSION['image'];
+
+  try {
+    $stmt_deletephoto = $conn->prepare("DELETE FROM images WHERE image_name=:image_name AND image_creator=:image_creator");
+    $stmt_deletephoto->bindValue(":image_name", $image_name);
+    $stmt_deletephoto->bindValue(":image_creator", $name);
+    $stmt_deletephoto->execute();
+    header("Location: feed.php");
+  } catch (PDOException $e) {
+    echo "error: " . $e->getMessage();
+  }
+
+
 }
 
 ?>
@@ -78,7 +91,20 @@ if (!empty($_POST['btnUpdate'])) {
                 <div class="single_page">
                     <div class="single_page_content"> 
                         <?php
-                            echo '<img class="img-center" src="../images/single_post_img.jpg" alt="">';
+                            $image_url = $_SESSION['image'];
+                            echo $image_url . "</br>";
+
+                            echo '
+                            <figure class="bsbig_fig  wow fadeInDown">
+                                <img src="./images/user_images/' . $image_url . '" alt="">
+                            </figure>';
+                            
+                            echo '</br>';
+
+                            echo '
+                            <form action="" method="POST" enctype="multipart/form-data">
+                             <input type="submit" class="btn btn-primary" value="Delete Photo" name="btnDelete">
+                            </form>';
                         ?>
                     </div>
                 </div>
