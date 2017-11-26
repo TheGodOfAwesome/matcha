@@ -24,7 +24,7 @@ if($name == "" || $email == "" || $status != "logged in")
 
 // check Update request
 if (!empty($_POST['btnUpdate'])) {
-    if ($_POST['name'] == "" && $_POST['fname'] == "" && $_POST['lname'] == "" && $_POST['interests'] == "" && $_POST['email'] == "" && ($_POST['date'] == "Date" && $_POST['month'] == "Month" && $_POST['year'] == "Year")) {
+    if ($_POST['name'] == "" && $_POST['fname'] == "" && $_POST['lname'] == "" && $_POST['add'] == "" && $_POST['bio'] == "" && $_POST['interests'] == "" && $_POST['email'] == "" && ($_POST['date'] == "Date" && $_POST['month'] == "Month" && $_POST['year'] == "Year")) {
         $update_profile_error_message = 'You have not updated any of the information on your profile, please fill in at least one field!';
         echo $update_profile_error_message . "<br>";
     } else if (($_POST['fname'] == "" && $_POST['lname'] != "") || ($_POST['fname'] != "" && $_POST['lname'] == "")){
@@ -35,6 +35,7 @@ if (!empty($_POST['btnUpdate'])) {
             $name = $_POST['name'];
             $fname = $_POST['fname'];
             $lname = $_POST['lname'];
+            $emails = $_POST['email'];
             $bio = $_POST['bio'];
             $address = $_POST['add'];
             $interests = $_POST['interests'];
@@ -70,6 +71,15 @@ if (!empty($_POST['btnUpdate'])) {
                 $stmt_fullname->bindParam(':fullname', $fullname);
                 $stmt_fullname->bindParam(':email', $email);
                 $stmt_fullname->execute();
+            }
+
+            if ($_POST['email'] != "") {
+                //$emails = $_POST['email'];
+                $stmt_email = $conn->prepare("UPDATE users SET email=:email
+                WHERE name=:name");
+                $stmt_email->bindParam(':email', $emails);
+                $stmt_email->bindParam(':name', $name);
+                $stmt_email->execute();
             }
 
             if ($_POST['bio'] != "") {
@@ -133,9 +143,9 @@ if (!empty($_POST['btnUpdate'])) {
             $country = $geolocation["geoplugin_countryName"];
             $city = $geolocation["geoplugin_city"];
 
-            echo "Ext IP " . $PublicIP . "</br>";
-            echo "Country " . $country . "</br>";
-            echo "City " . $city . "</br>";
+            //echo "Ext IP " . $PublicIP . "</br>";
+            //echo "Country " . $country . "</br>";
+            //echo "City " . $city . "</br>";
 
             $stmt_location = $conn->prepare("UPDATE users SET city=:city, country=:country, geolocation=:geolocation 
             WHERE email=:email");
@@ -144,6 +154,8 @@ if (!empty($_POST['btnUpdate'])) {
             $stmt_location->bindParam(':geolocation', $geolocation);
             $stmt_location->bindParam(':email', $email);
             $stmt_location->execute();
+
+            echo "Profile updated!";
 
 		} catch (PDOException $e) {
 			echo "error: " . $sql . "<br>" . $e->getMessage();
@@ -217,6 +229,10 @@ if (!empty($_POST['btnUpdate'])) {
                     <div class="form-group">
                         <label for="">Last Name</label>
                         <input type="text" name="lname" class="form-control" placeholder="Doe"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="johndoe@example.com"/>
                     </div>
                     <div class="form-group">
                         <label for="">Date of Birth</label>

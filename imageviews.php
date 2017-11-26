@@ -20,39 +20,6 @@ if($name == "" || $email == "" || $status != "logged in")
 $image=$_GET['image'];
 $_SESSION['image'] = $image;
 
-// check Delete request
-if (!empty($_POST['btnDelete'])) {
-  echo $_SESSION['image'] . "</br>" . "Test";
-  $image_name = $_SESSION['image'];
-
-  $stmt_user = $conn->prepare("SELECT * FROM users WHERE name=:name");
-  $stmt_user->bindValue(":name", $name);
-  if ($stmt_user->execute()) {
-    while ($row = $stmt_user->fetch(PDO::FETCH_ASSOC)) {
-      $image_count = $row['imagecount'];
-    }
-  }
-
-  try {
-    $stmt_deletephoto = $conn->prepare("DELETE FROM images WHERE image_name=:image_name AND image_creator=:image_creator");
-    $stmt_deletephoto->bindValue(":image_name", $image_name);
-    $stmt_deletephoto->bindValue(":image_creator", $name);
-    $stmt_deletephoto->execute();
-
-    $image_count = $image_count - 1;
-    $stmt_imagecount = $conn->prepare("UPDATE users SET imagecount=:imagecount
-    WHERE email=:email");
-    $stmt_imagecount->bindParam(':imagecount', $image_count);
-    $stmt_imagecount->bindParam(':email', $email);
-    $stmt_imagecount->execute();
-    header("Location: feed.php");
-  } catch (PDOException $e) {
-    echo "error: " . $e->getMessage();
-  }
-
-
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -113,13 +80,6 @@ if (!empty($_POST['btnDelete'])) {
                             <figure class="bsbig_fig  wow fadeInDown">
                                 <img src="./images/user_images/' . $image_url . '" alt="">
                             </figure>';
-                            
-                            echo '</br>';
-
-                            echo '
-                            <form action="" method="POST" enctype="multipart/form-data">
-                             <input type="submit" class="btn btn-primary" value="Delete Photo" name="btnDelete">
-                            </form>';
                         ?>
                     </div>
                 </div>

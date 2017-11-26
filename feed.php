@@ -10,6 +10,7 @@
   }
 
   include './config/conn.php';
+  include './inc/uploadphotos.php';
 
   if($name == "" || $email == "" || $status != "logged in")
   {
@@ -54,6 +55,7 @@
           <div class="header_top_left">
             <ul class="top_nav">
               <li><a href="#">Home</a></li>
+              <li><a href="#">Matches</a></li>
               <li><a href="#">Messages</a></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
@@ -66,34 +68,120 @@
       </div>
     </div>
   </header>
-  <section id="sliderSection">
+  <section id="contentSection">
     <div class="row">
       <div class="col-lg-8 col-md-8 col-sm-8">
-        <div class="slick_slider">
-          <div class="single_iteam"> <a href="pages/single_page.html"> <img src="images/slider_img4.jpg" alt=""></a>
-            <div class="slider_article">
-              <h2><a class="slider_tittle" href="pages/single_page.html">Fusce eu nulla semper porttitor felis sit amet</a></h2>
-              <p>Nunc tincidunt, elit noon cursus euismod, lacus augue ornare metus, egestas imperdiet nulla nisl quis mauris. Suspendisse a pharetra urna. Morbi dui...</p>
+        <div class="single_post_content">
+          <h2><span>Profile</span></h2>
+            <div class="single_post_content_left">
+              <ul class="business_catgnav  wow fadeInDown">
+              <li>   
+              <figure class="#"> <a class="sideAdd" href="#">
+
+                <?php
+                  $path = "./images/user_images/";
+                  $type = "profile";
+                  $stmt_profilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator AND image_type=:image_type ORDER BY image_timestamp ASC");
+                  $stmt_profilephoto->bindValue(":image_creator", $name);
+                  $stmt_profilephoto->bindValue(":image_type", $type);
+                  // initialise an array for the results 
+                  $user_image = array();
+                  if ($stmt_profilephoto->execute()) {
+                    while ($row = $stmt_profilephoto->fetch(PDO::FETCH_ASSOC)) {
+                      $user_image[] = $row;
+                      $image_url = $row['image_name'];
+                      $url = $path . $image_url;
+                      echo '<img src=" ' . $url . '" alt="">';
+                    }
+                  }
+                ?>
+
+                <span class="overlay"></span> </a>
+
+                <?php
+                  $path = "./images/user_images/";
+                  $type = "profile";
+                  $stmt_rating = $conn->prepare("SELECT * FROM users WHERE name=:name");
+                  $stmt_rating->bindValue(":name", $name);
+                  // initialise an array for the results 
+                  $user = array();
+                  if ($stmt_rating->execute()) {
+                    while ($row = $stmt_rating->fetch(PDO::FETCH_ASSOC)) {
+                      $user[] = $row;
+                      $full_name = $row['fullname'];
+                      $user_name = $row['name'];
+                      $user_dob = $row['dateofbirth'];
+                      $user_bio = $row['bio'];
+                      $user_gender = $row['gender'];
+                      $user_preference = $row['preference'];
+                      $user_city = $row['city'];
+                      $user_country = $row['country'];
+
+                      
+
+                      if ($user_bio == ""){
+                        $user_bio = 'Please update your profile and add a bio by clicking this <a href="./updateprofile.php">link</a>!';
+                      }
+                      if ($user_city == ""){
+                        $user_city = 'Please update your profile and add a city by clicking this <a href="./updateprofile.php">link</a>!';
+                      }
+                      if ($user_country == ""){
+                        $user_country = 'Please update your profile and add a country by clicking this <a href="./updateprofile.php">link</a>!';
+                      }
+                      if ($user_dob == ""){
+                        $user_age = 'Please update your profile and add a date of birth by clicking this <a href="./updateprofile.php">link</a>!';
+                      } else {
+                        //date is in yyyy/mm/dd format;
+                        //explode the date to get month, day and year
+                        $birthDate = explode("-", $user_dob);
+                        //get age from date or birthdate
+                        $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[1], $birthDate[2], $birthDate[0]))) > date("md")
+                        ? ((date("Y") - $birthDate[0]) - 1)
+                        : (date("Y") - $birthDate[0]));
+                        $user_age = $age;
+                      }
+
+                      
+
+                      echo'<figcaption><h3>' . $full_name . ' : ' . $user_name . ' </h3></figcaption>
+                      <p><h4>Bio : ' . $user_bio .' </h4></p>
+                      </figure>';
+                    }
+                  }
+                ?>
+
+                </li>
+              </ul>
             </div>
-          </div>
-          <div class="single_iteam"> <a href="pages/single_page.html"> <img src="images/slider_img2.jpg" alt=""></a>
-            <div class="slider_article">
-              <h2><a class="slider_tittle" href="pages/single_page.html">Fusce eu nulla semper porttitor felis sit amet</a></h2>
-              <p>Nunc tincidunt, elit non cursus euismod, lacus augue ornare metus, egestas imperdiet nulla nisl quis mauris. Suspendisse a pharetra urna. Morbi dui...</p>
+            <div class="single_post_content_right">
+              <ul class="spost_nav">
+                <li>
+                  <div class="media wow fadeInDown"> 
+                    <div class="media-body"><h2> Gender: <?php echo $user_gender; ?> </h2></div>
+                  </div>
+                </li>
+                <li>
+                  <div class="media wow fadeInDown"> 
+                    <div class="media-body"><h2> Preference: <?php echo $user_preference; ?> </h2></div>
+                  </div>
+                </li>
+                <li>
+                  <div class="media wow fadeInDown"> 
+                    <div class="media-body"><h2> City: <?php echo $user_city; ?> </h2></div>
+                  </div>
+                </li>
+                <li>
+                  <div class="media wow fadeInDown"> 
+                    <div class="media-body"><h2> Country: <?php echo $user_country; ?> </h2></div>
+                  </div>
+                </li>
+                <li>
+                  <div class="media wow fadeInDown"> 
+                    <div class="media-body"><h2> Age: <?php echo $user_age; ?> </h2></div>
+                  </div>
+                </li>
+              </ul>
             </div>
-          </div>
-          <div class="single_iteam"> <a href="pages/single_page.html"> <img src="images/slider_img3.jpg" alt=""></a>
-            <div class="slider_article">
-              <h2><a class="slider_tittle" href="pages/single_page.html">Fusce eu nulla semper porttitor felis sit amet</a></h2>
-              <p>Nunc tincidunt, elit non cursus euismod, lacus augue ornare metus, egestas imperdiet nulla nisl quis mauris. Suspendisse a pharetra urna. Morbi dui...</p>
-            </div>
-          </div>
-          <div class="single_iteam"> <a href="pages/single_page.html"> <img src="images/slider_img1.jpg" alt=""></a>
-            <div class="slider_article">
-              <h2><a class="slider_tittle" href="pages/single_page.html">Fusce eu nulla semper porttitor felis sit amet</a></h2>
-              <p>Nunc tincidunt, elit non cursus euismod, lacus augue ornare metus, egestas imperdiet nulla nisl quis mauris. Suspendisse a pharetra urna. Morbi dui...</p>
-            </div>
-          </div>
         </div>
             <div class="single_post_content_left">
               <ul class="business_catgnav">
@@ -183,7 +271,7 @@
 
         </div>
         <div class="latest_post">
-          <h2><span>Latest Matches</span></h2>
+          <h2><span>Notifications</span></h2>
           <div class="latest_post_container">
             <div id="prev-button"><i class="fa fa-chevron-up"></i></div>
             <ul class="latest_postnav">
@@ -238,15 +326,31 @@
                 while ($row = $stmt_photo->fetch(PDO::FETCH_ASSOC)) {
                   $user_image[] = $row;
                   $image = $row['image_name'];
+                  $image_type = $row['image_type'];
                   $image_url = $row['image_name'] . "?image=" . $image;
                   $url = $path . $image_url;
                   $link = "./imageview.php?image=" . $image;
-                  echo '<li><div class="photo_grid">
-                  <figure class="effect-layla"> <a href=" ' . $link . ' " title=" ' . $image . ' "> <img src=" ' . $url . ' " alt=""/></a> </figure>
-                  </div></li>';
+                  $links = "./imageviews.php?image=" . $image;
+
+                  if ($image_type == "profile"){
+                    echo '<li><div class="photo_grid">
+                    <figure class="effect-layla"> <a href=" ' . $links . ' " title=" ' . $image . ' "> <img src=" ' . $url . ' " alt=""/></a> </figure>
+                    </div></li>';
+                  } else {
+                    echo '<li><div class="photo_grid">
+                    <figure class="effect-layla"> <a href=" ' . $link . ' " title=" ' . $image . ' "> <img src=" ' . $url . ' " alt=""/></a> </figure>
+                    </div></li>';
+                  }
                 }
               }
             ?>
+            <li>
+                <form action="" method="POST" enctype="multipart/form-data">
+                     <b>Select new gallery picture:</b>
+                    <input type="file" class="btn btn-primary" name="fileToUpload" id="fileToUpload">
+                    <input type="submit" class="btn btn-primary" value="Upload Profile Photo" name="submit">
+                </form>
+            </li>
             </ul>
           </div>
         </div>

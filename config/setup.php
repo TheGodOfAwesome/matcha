@@ -24,20 +24,21 @@ $sql2 = "CREATE TABLE IF NOT EXISTS users ("
 . "email varchar(50),"
 . "gender varchar(7),"
 . "dateofbirth date,"
-. "bio varchar(280),"
+. "bio varchar(255),"
 . "rating int,"
 . "imagecount int,"
-. "address varchar(1000),"
-. "neighbourhood varchar(1000),"
-. "city varchar(500),"
-. "country varchar(500),"
-. "geolocation varchar(50),"
-. "interests varchar(280),"
-. "preference varchar(8),"
-. "password varchar(1000),"
+. "address varchar(255),"
+. "neighbourhood varchar(255),"
+. "city varchar(255),"
+. "country varchar(255),"
+. "geolocation varchar(255),"
+. "interests varchar(255),"
+. "preference varchar(9) DEFAULT 'undefined',"
+. "password varchar(255),"
 . "status varchar(50),"
 . "login_status varchar(7),"
-. "confirmation_code varchar(1000),"
+. "confirmation_code varchar(255),"
+. "last_seen timestamp,"
 . "last_login_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
 . "PRIMARY KEY (id));";
 
@@ -94,6 +95,7 @@ $sql5 = "CREATE TABLE IF NOT EXISTS log ("
 . "log_action varchar(50),"
 . "log_action_recipient_id int,"
 . "log_action_recipient_name varchar(100),"
+. "log_action_result int,"
 . "log_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
 . "PRIMARY KEY (log_id));";
 
@@ -102,6 +104,22 @@ try {
 	echo "Comments created successfully <br>";
 } catch (PDOException $e) {
 	echo "error: " . $sql5 . "<br>" . $e->getMessage();
+}
+
+$sql6 = "CREATE TABLE IF NOT EXISTS messages ("
+. "message_id int NOT NULL AUTO_INCREMENT,"
+. "chat_id varchar(100),"
+. "message_sender_name varchar(100),"
+. "message_recepient_name varchar(100),"
+. "message_text text,"
+. "message_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
+. "PRIMARY KEY (message_id));";
+
+try {
+	$conn->exec($sql6);
+	echo "messages created successfully <br>";
+} catch (PDOException $e) {
+	echo "error: " . $sql6 . "<br>" . $e->getMessage();
 }
 
 $conn = null;

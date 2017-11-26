@@ -17,11 +17,11 @@ if(isset($_POST["submit"])) {
         $uploadOk = 0;
     }
     
-    // Check if file already exists
+    /* Check if file already exists
     if (file_exists($target_file)) {
         echo "Sorry, file already exists.";
         $uploadOk = 0;
-    }
+    }*/
 
     // Check file size
 
