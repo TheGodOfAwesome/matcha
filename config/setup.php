@@ -36,9 +36,9 @@ $sql2 = "CREATE TABLE IF NOT EXISTS users ("
 . "preference varchar(9) DEFAULT 'undefined',"
 . "password varchar(255),"
 . "status varchar(50),"
-. "login_status varchar(7),"
+. "loginstatus varchar(10),"
 . "confirmation_code varchar(255),"
-. "last_seen timestamp,"
+. "lastseen timestamp,"
 . "last_login_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
 . "PRIMARY KEY (id));";
 
@@ -91,17 +91,18 @@ $sql5 = "CREATE TABLE IF NOT EXISTS log ("
 . "log_id int NOT NULL AUTO_INCREMENT,"
 . "log_user_id int,"
 . "log_user_name varchar(100),"
+. "log_user_image varchar(100),"
 . "log_description varchar(50),"
 . "log_action varchar(50),"
 . "log_action_recipient_id int,"
 . "log_action_recipient_name varchar(100),"
-. "log_action_result int,"
+. "log_action_result int NOT NULL DEFAULT '0',"
 . "log_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
 . "PRIMARY KEY (log_id));";
 
 try {
 	$conn->exec($sql5);
-	echo "Comments created successfully <br>";
+	echo "Log created successfully <br>";
 } catch (PDOException $e) {
 	echo "error: " . $sql5 . "<br>" . $e->getMessage();
 }
@@ -109,7 +110,9 @@ try {
 $sql6 = "CREATE TABLE IF NOT EXISTS messages ("
 . "message_id int NOT NULL AUTO_INCREMENT,"
 . "chat_id varchar(100),"
+. "message_sender_id int,"
 . "message_sender_name varchar(100),"
+. "message_recepient_id int,"
 . "message_recepient_name varchar(100),"
 . "message_text text,"
 . "message_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
@@ -117,7 +120,7 @@ $sql6 = "CREATE TABLE IF NOT EXISTS messages ("
 
 try {
 	$conn->exec($sql6);
-	echo "messages created successfully <br>";
+	echo "Messages created successfully <br>";
 } catch (PDOException $e) {
 	echo "error: " . $sql6 . "<br>" . $e->getMessage();
 }

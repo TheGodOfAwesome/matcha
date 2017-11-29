@@ -1,5 +1,22 @@
 <?php
 
+// Start Session
+session_start();
+
+if(isset($_SESSION['email'])) {
+  $name = $_SESSION['name'];
+  $email = $_SESSION['email'];
+  $status = $_SESSION['status'];
+}
+
+include './config/conn.php';
+
+if($name == "" || $email == "" || $status != "logged in")
+{
+    header("Location: ./index.php");
+    exit();
+}
+
 $target_dir = "./images/user_images/";
 $image_name = $name . "-profile.png";
 $image_type = "profile";

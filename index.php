@@ -15,7 +15,7 @@ if(!empty($_SESSION['name'])) {
 
         if($email != "" && $status == "logged in")
         {
-            header("Location: matcha.php");
+            header("Location: feed.php");
             exit();
         }
     }
@@ -50,6 +50,13 @@ if (!empty($_POST['btnLogin'])) {
                 if ($stmt3->rowCount() > 0) {
                     $row = $stmt3->fetch();
                     $name = $row['name'];
+                    $loginstatus = "loggedin";
+                    
+                    $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus
+                    WHERE email=:email");
+                    $stmt_status->bindParam(':loginstatus', $loginstatus);
+                    $stmt_status->bindParam(':email', $email);
+                    $stmt_status->execute();
 
                     $_SESSION['name'] = $name;
                     $_SESSION['email'] = $email;
@@ -73,7 +80,14 @@ if (!empty($_POST['btnLogin'])) {
                     if ($stmt5->rowCount() > 0) {
                         $row = $stmt5->fetch();
                         $email = $row['email'];
+                        $loginstatus = "loggedin";
                         
+                        $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus
+                        WHERE email=:email");
+                        $stmt_status->bindParam(':loginstatus', $loginstatus);
+                        $stmt_status->bindParam(':email', $email);
+                        $stmt_status->execute();
+
                         $_SESSION['name'] = $name;
                         $_SESSION['email'] = $email;
                         $_SESSION['status'] = "logged in";

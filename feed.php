@@ -55,8 +55,8 @@
           <div class="header_top_left">
             <ul class="top_nav">
               <li><a href="#">Home</a></li>
-              <li><a href="#">Matches</a></li>
-              <li><a href="#">Messages</a></li>
+              <li><a href="./matcha.php">Matches</a></li>
+              <li><a href="./chat.php">Messages</a></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
@@ -120,16 +120,16 @@
                       
 
                       if ($user_bio == ""){
-                        $user_bio = 'Please update your profile and add a bio by clicking this <a href="./updateprofile.php">link</a>!';
+                        $user_bio = 'Please update your profile and add a <a href="./updateprofile.php">bio</a>!';
                       }
                       if ($user_city == ""){
-                        $user_city = 'Please update your profile and add a city by clicking this <a href="./updateprofile.php">link</a>!';
+                        $user_city = 'Please update your profile and add a <a href="./updateprofile.php">city</a>!';
                       }
                       if ($user_country == ""){
-                        $user_country = 'Please update your profile and add a country by clicking this <a href="./updateprofile.php">link</a>!';
+                        $user_country = 'Please update your profile and add a <a href="./updateprofile.php">country</a>!';
                       }
                       if ($user_dob == ""){
-                        $user_age = 'Please update your profile and add a date of birth by clicking this <a href="./updateprofile.php">link</a>!';
+                        $user_age = 'Please update your profile and add a <a href="./updateprofile.php">date of birth</a>!';
                       } else {
                         //date is in yyyy/mm/dd format;
                         //explode the date to get month, day and year
@@ -275,31 +275,64 @@
           <div class="latest_post_container">
             <div id="prev-button"><i class="fa fa-chevron-up"></i></div>
             <ul class="latest_postnav">
-              <li>
-                <div class="media"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>
-                  <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 1</a> </div>
-                </div>
-              </li>
-              <li>
-                <div class="media"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>
-                  <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 2</a> </div>
-                </div>
-              </li>
-              <li>
-                <div class="media"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>
-                  <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 3</a> </div>
-                </div>
-              </li>
-              <li>
-                <div class="media"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>
-                  <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 4</a> </div>
-                </div>
-              </li>
-              <li>
-                <div class="media"> <a href="pages/single_page.html" class="media-left"> <img alt="" src="images/post_img1.jpg"> </a>
-                  <div class="media-body"> <a href="pages/single_page.html" class="catg_title"> Aliquam malesuada diam eget turpis varius 2</a> </div>
-                </div>
-              </li>
+              <?php
+                $log_action_result = 0;
+                $stmt_log = $conn->prepare("SELECT * FROM log WHERE log_action_recipient_name=:log_action_recipient_name AND log_action_result=:log_action_result ORDER BY log_timestamp DESC");
+                $stmt_log->bindValue(":log_action_recipient_name", $name);
+                $stmt_log->bindValue(":log_action_result", $log_action_result);
+                if ($stmt_log->execute()) {
+                  while ($row = $stmt_log->fetch(PDO::FETCH_ASSOC)) {
+                    $log_id = $row['log_id'];
+                    $log_action = $row['log_action'];
+                    $log_creator = $row['log_user_name'];
+
+                    /******************************************************************************** */
+
+                    $path = "./images/user_images/";
+                    $type = "profile";
+                    $stmt_notificationprofilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator AND image_type=:image_type ORDER BY image_timestamp DESC");
+                    $stmt_notificationprofilephoto->bindValue(":image_creator", $log_creator);
+                    $stmt_notificationprofilephoto->bindValue(":image_type", $type);
+                    // initialise an array for the results 
+                    $user_image = array();
+                    if ($stmt_notificationprofilephoto->execute()) {
+                      while ($row = $stmt_notificationprofilephoto->fetch(PDO::FETCH_ASSOC)) {
+                        $user_image[] = $row;
+                        $image_url = $row['image_name'];
+                        $url = $path . $image_url;
+                      }
+                    }
+
+                    /******************************************************************************** */
+
+                    If ($log_action == "like") {
+                      $counter_action = "like back";
+                      echo '
+                      <li>
+                        <div class="media"> <a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                          <div class="media-body"> <a href="./profile.php?profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked your profile!</a></h6><a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" ><h2>Like ' . $log_creator . ' Back?</h2></a></div>
+                        </div>
+                      </li>';
+                    } else if ($log_action == "like back") {
+                      $counter_action = "message";
+                      echo '
+                      <li>
+                      <div class="media"> <a href="inc/message.php?profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                        <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title">Message ' . $log_creator . '</a> </div>
+                      </div>
+                      </li>';
+                    } else if ($log_action == "messaged") {
+                      $counter_action = "message";
+                      echo '
+                      <li>
+                      <div class="media"> <a href="inc/message.php?profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                        <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title">Message ' . $log_creator . ' Back</a> </div>
+                      </div>
+                      </li>';
+                    }
+                  }
+                }
+              ?>
             </ul>
             <div id="next-button"><i class="fa  fa-chevron-down"></i></div>
           </div>

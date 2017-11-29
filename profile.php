@@ -43,6 +43,8 @@
       $user_preference = $row['preference'];
       $user_city = $row['city'];
       $user_country = $row['country'];
+      $user_loginstatus = $row['loginstatus'];
+      $user_lastseen = $row['lastseen'];
 
       if ($user_bio == ""){
         $user_bio = 'They haven\'t updated their bio yet!';
@@ -353,26 +355,29 @@
             <h2><span>Interactions</span></h2>
             <ul class="spost_nav">
               <li>
-                <?php
-                echo
-                '<div class="media wow fadeInDown"> 
-                  <div class="media-body"><a href="./inc/like.php?profile="' . $profile . '" class="catg_title"><h2> Like: ' . $profile . ' </h2></a></div>
-                </div>'
-                ?>
-              </li>
-              <li>
                 <div class="media wow fadeInDown"> 
-                  <div class="media-body"><h2> Login Status: <?php echo $user_preference; ?> </h2></div>
+                  <?php echo '<div class="media-body"><a href="./inc/like.php?profile='.$profile.'" class="catg_title"><h2> Like '.$profile .'\'s user profile!</h2></a></div>'; ?>
                 </div>
               </li>
               <li>
                 <div class="media wow fadeInDown"> 
-                  <div class="media-body"><a href="./inc/block.php?profile=' . <?php echo $profile; ?>  . " class="catg_title"><h2> Block <?php echo $profile; ?></h2></a></div>
+                  <?php
+                    if ($user_loginstatus == "loggedout"){
+                      echo '<div class="media-body"><h2> Login Status: Logged Out </BR> </BR> Last Seen: '. $user_lastseen .'.</h2></div>';    
+                    }else{
+                      echo '<div class="media-body"><h2> Login Status: Logged In </h2></div>'; 
+                    }
+                   ?>
                 </div>
               </li>
               <li>
                 <div class="media wow fadeInDown"> 
-                  <div class="media-body"><a href="./inc/report.php?profile=' . <?php echo $profile; ?>  . " class="catg_title"><h2> Report <?php echo $profile; ?> as a fake user!</h2></a></div>
+                  <?php echo '<div class="media-body"><a href="./inc/block.php?profile='.$profile.'" class="catg_title"><h2> Block '.$profile .'\'s user profile!</h2></a></div>'; ?> 
+                </div>
+              </li>
+              <li>
+                <div class="media wow fadeInDown"> 
+                  <?php echo '<div class="media-body"><a href="./inc/report.php?profile='.$profile.'" class="catg_title"><h2> Report '.$profile .'\'s as a fake user profile!</h2></a></div>'; ?> 
                 </div>
               </li>
             </ul>

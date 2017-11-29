@@ -24,7 +24,7 @@ if ($_GET['profile'] == "") {
     $profile=$_GET['profile'];
     $log_description = "like";
     $log_action = "like";
-    $stmt_like = $conn->prepare("INSERT INTO logs(log_user_name, log_description, log_action, log_action_recipient_name) 
+    $stmt_like = $conn->prepare("INSERT INTO log(log_user_name, log_description, log_action, log_action_recipient_name) 
     VALUES(:log_user_name, :log_description, :log_action, :log_action_recipient_name)");
     $stmt_like->bindParam(':log_user_name', $name);
     $stmt_like->bindParam(':log_description', $log_description);
