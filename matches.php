@@ -67,7 +67,7 @@ if($name == "" || $email == "" || $status != "logged in")
     </div>
   </header>
   <section id="contentSection">
-    
+    <h2>Matches</h2>
   </section>
   <footer id="footer">
     <div class="footer_bottom">

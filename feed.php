@@ -117,8 +117,6 @@
                       $user_city = $row['city'];
                       $user_country = $row['country'];
 
-                      
-
                       if ($user_bio == ""){
                         $user_bio = 'Please update your profile and add a <a href="./updateprofile.php">bio</a>!';
                       }
@@ -313,21 +311,21 @@
                           <div class="media-body"> <a href="./profile.php?profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked your profile!</a></h6><a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" ><h2>Like ' . $log_creator . ' Back?</h2></a></div>
                         </div>
                       </li>';
-                    } else if ($log_action == "like back") {
+                    } else if ($log_action == "likeback") {
                       $counter_action = "message";
                       echo '
                       <li>
-                      <div class="media"> <a href="inc/message.php?profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
-                        <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title">Message ' . $log_creator . '</a> </div>
-                      </div>
+                        <div class="media"> <a href="inc/message.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                          <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked you back!</h6><h2>Message ' . $log_creator . '</h2></a> </div>
+                        </div>
                       </li>';
-                    } else if ($log_action == "messaged") {
+                    } else if ($log_action == "message") {
                       $counter_action = "message";
                       echo '
                       <li>
-                      <div class="media"> <a href="inc/message.php?profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
-                        <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title">Message ' . $log_creator . ' Back</a> </div>
-                      </div>
+                        <div class="media"> <a href="inc/message.php?profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                          <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title">Message ' . $log_creator . ' Back</a> </div>
+                        </div>
                       </li>';
                     }
                   }
