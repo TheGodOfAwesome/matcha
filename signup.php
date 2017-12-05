@@ -126,6 +126,27 @@ if (!empty($_POST['btnRegister'])) {
                     if($sentmail){
                         $stmt->execute();
                         $stmt_uploadprofilepic->execute();
+
+                        $matchestable = $name + "-matches";
+
+                        echo $matchestable . "<br>";
+
+                        $sql_creatematches = "CREATE TABLE IF NOT EXISTS matches"
+                        . " ("
+                        . "match_id int NOT NULL AUTO_INCREMENT,"
+                        . "match_message_id varchar(100),"
+                        . "match_name varchar(100),"
+                        . "match_creator varchar(50),"
+                        . "match_creator_email varchar(50),"
+                        . "match_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
+                        . "PRIMARY KEY (match_id));";
+            
+                        try {
+                            $conn->exec($sql_creatematches);
+                        } catch (PDOException $e) {
+                            echo "error: " . $sql_creatematches . "<br>" . $e->getMessage();
+                        }
+
                         echo "Your Confirmation link Has Been Sent To Your Email Address.";
                     } else {
                         echo "Cannot send Confirmation link to your e-mail address";

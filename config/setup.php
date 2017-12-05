@@ -96,6 +96,37 @@ try {
 	echo "error: " . $sql3 . "<br>" . $e->getMessage();
 }
 
+$target_dir = "./images/user_images/";
+$image_name = $name . "-profile.png";
+$image_type = "profile";
+$target_file = $target_dir . $image_name;
+
+$sql_insertimages = "INSERT INTO images (image_name, image_type, image_creator, image_creator_email, image_likes, image_url) VALUES"
+			."('Sasuke-profile.png', 'profile', 'Sasuke', 'suchiha@konoha.com', '0', './images/user_images/Sasuke-profile.png'),"
+			."('Sakura-profile.png', 'profile', 'Sakura', 'sharuno@konoha.com', '0', './images/user_images/Sakura-profile.png'),"
+			."('Shikamaru-profile.png', 'profile', 'Shikamaru', 'snara@konoha.com', '0', './images/user_images/Shikamaru-profile.png'),"
+			."('Temari-profile.png', 'profile', 'Temari', 'tnara@konoha.com', '0', './images/user_images/Temari-profile.png'),"
+			."('Kakashi-profile.png', 'profile', 'Kakashi', 'khatake@konoha.com', '0', './images/user_images/Kakashi-profile.png'),"
+			."('Rock-Lee-profile.png', 'profile', 'Rock-Lee', 'rlee@konoha.com', '0', './images/user_images/Rock-Lee-profile.png'),"
+			."('Tenten-profile.png', 'profile', 'Tenten', 'tenten@konoha.com', '0', './images/user_images/Tenten-profile.png'),"
+			."('Ino-profile.png', 'profile', 'Ino', 'iyamanaka@konoha.com', '0', './images/user_images/Ino-profile.png'),"
+			."('Itachi-profile.png', 'profile', 'Itachi', 'iuchiha@konoha.com', '0', './images/user_images/Itachi-profile.png'),"
+			."('KillerBee-profile.png', 'profile', 'KillerBee', 'killerbee@kumo.com', '0', './images/user_images/KillerBee-profile.png'),"
+			."('Jiraiya-profile.png', 'profile', 'Jiraiya', 'jiraiya@konoha.com', '0', './images/user_images/Jiraiya-profile.png'),"
+			."('Gaara-profile.png', 'profile', 'Gaara', 'gaara@sand.com', '0', './images/user_images/Gaara-profile.png'),"
+			."('Kurenai-profile.png', 'profile', 'Kurenai', 'kyuhi@konoha.com', '0', './images/user_images/Kurenai-profile.png'),"
+			."('Sai-profile.png', 'profile', 'Sai', 'sai@konoha.com', '0', './images/user_images/Sai-profile.png'),"
+			."('Rin-profile.png', 'profile', 'Rin', 'rnohara@konoha.com', '0', './images/user_images/Rin-profile.png'),"
+			."('Tsunade-profile.png', 'profile', 'Tsunade', 'tsenju@konoha.com', '0', './images/user_images/Tsunade-profile.png'),"
+			."('Karin-profile.png', 'profile', 'Karin', 'karin@kusa.com', '0', './images/user_images/Karin-profile.png');";
+
+try {
+	$conn->exec($sql_insertimages);
+	echo "Users added successfully <br>";
+} catch (PDOException $e) {
+	echo "error: " . $sql_insertimages . "<br>" . $e->getMessage();
+}
+
 $sql4 = "CREATE TABLE IF NOT EXISTS comments ("
 . "comment_id int NOT NULL AUTO_INCREMENT,"
 . "comment_creator varchar(50),"
