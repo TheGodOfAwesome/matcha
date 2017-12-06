@@ -155,7 +155,7 @@ $sql_insertimages = "INSERT INTO images (image_name, image_type, image_creator, 
 
 try {
 	$conn->exec($sql_insertimages);
-	echo "Users added successfully <br>";
+	echo "Images added successfully <br>";
 } catch (PDOException $e) {
 	echo "error: " . $sql_insertimages . "<br>" . $e->getMessage();
 }

@@ -78,7 +78,7 @@ if($profile == "")
     </div>
   </header>
   <section id="contentSection">
-    <h2>Chats</h2>
+    <h2>Messages</h2>
     <div style="height:1000px; width:100%; overflow:hidden; border:10px solid;">
 
     <?php  

@@ -55,8 +55,8 @@
           <div class="header_top_left">
             <ul class="top_nav">
               <li><a href="#">Home</a></li>
-              <li><a href="./matcha.php">Matches</a></li>
-              <li><a href="./chat.php">Messages</a></li>
+              <li><a href="./matches.php">Matches</a></li>
+              <li><a href="./message.php">Messages</a></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
