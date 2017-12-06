@@ -54,7 +54,7 @@ if($name == "" || $email == "" || $status != "logged in")
           <div class="header_top_left">
             <ul class="top_nav">
               <li><a href="./feed.php">Home</a></li>
-              <li><a href="./matcha.php">Matches</a></li>
+              <li><a href="./message.php">Messages</a></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
@@ -68,6 +68,53 @@ if($name == "" || $email == "" || $status != "logged in")
   </header>
   <section id="contentSection">
     <h2>Matches</h2>
+    <div class="col-lg-8 col-md-8 col-sm-8">
+        <div class="left_content">
+          <div style="height:350px; width:100%; overflow:hidden; border:10px solid;">
+          </div>
+          <div class="contact_area">
+            <h2>Quick Match Search</h2>
+                <form action="#" method="post" class="contact_form">
+                    <div class="form-group">
+                      <label for="">Sort By:</label>
+                        <select name="sort">
+                            <option value="">Sort By?</option>
+                            <option value="age">Age</option>
+                            <option value="location">Location</option>
+                            <option value="popularity">Popularity</option>
+                            <option value="interests">Interests</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Filter By Popularity:</label>
+                        <select name="sort">
+                            <option value="">Filter Popularity?</option>
+                            <option value="newbie">Newbies</option>
+                            <option value="wildcard">Wildcards</option>
+                            <option value="coolkid">Cool Kids</option>
+                            <option value="prom">Prom Kings/Queens</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Filter By:</label>
+                        <select name="filter">
+                            <option value="">Filter By?</option>
+                            <option value="age">Age</option>
+                            <option value="location">Location</option>
+                            <option value="interests">Interests</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Range</label>
+                        <input type="text" name="range" class="form-control" placeholder="Give range for above filter e.g. 5 for age range of ±5 yrs, Pretoria for Location & #hashtags for Interests."/>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" name="btnSearch" class="btn btn-primary" value="Search"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
   </section>
   <footer id="footer">
     <div class="footer_bottom">

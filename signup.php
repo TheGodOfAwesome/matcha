@@ -127,11 +127,12 @@ if (!empty($_POST['btnRegister'])) {
                         $stmt->execute();
                         $stmt_uploadprofilepic->execute();
 
-                        $matchestable = $name + "-matches";
+                        $matchestable = $name . "§matches";
 
                         echo $matchestable . "<br>";
 
-                        $sql_creatematches = "CREATE TABLE IF NOT EXISTS matches"
+                        $sql_creatematches = "CREATE TABLE IF NOT EXISTS " 
+                        . $matchestable
                         . " ("
                         . "match_id int NOT NULL AUTO_INCREMENT,"
                         . "match_message_id varchar(100),"
