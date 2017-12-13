@@ -215,7 +215,7 @@ if ($stmt_profile->execute()) {
                     <div class="form-group">
                       <label for="">Filter By Popularity:</label>
                         <select name="sort">
-                            <option value="">Filter Popularity?</option>
+                            <option value="">Filter By Popularity?</option>
                             <option value="newbie">Newbies</option>
                             <option value="wildcard">Wildcards</option>
                             <option value="coolkid">Cool Kids</option>
