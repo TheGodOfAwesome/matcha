@@ -50,6 +50,7 @@ if (!empty($_POST['btnLogin'])) {
                 if ($stmt3->rowCount() > 0) {
                     $row = $stmt3->fetch();
                     $name = $row['name'];
+                    $id = $row['id'];
                     $loginstatus = "loggedin";
                     
                     $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus
@@ -60,6 +61,7 @@ if (!empty($_POST['btnLogin'])) {
 
                     $_SESSION['name'] = $name;
                     $_SESSION['email'] = $email;
+                    $_SESSION['id'] = $id;
                     $_SESSION['status'] = "logged in";
                     header("Location: updateprofile.php");
                 } else {
@@ -80,6 +82,7 @@ if (!empty($_POST['btnLogin'])) {
                     if ($stmt5->rowCount() > 0) {
                         $row = $stmt5->fetch();
                         $email = $row['email'];
+                        $id = $row['id'];
                         $loginstatus = "loggedin";
                         
                         $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus
@@ -90,6 +93,7 @@ if (!empty($_POST['btnLogin'])) {
 
                         $_SESSION['name'] = $name;
                         $_SESSION['email'] = $email;
+                        $_SESSION['id'] = $id;
                         $_SESSION['status'] = "logged in";
                         header("Location: updateprofile.php");
                     } else {
