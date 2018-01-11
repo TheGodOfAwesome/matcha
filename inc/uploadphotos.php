@@ -77,7 +77,7 @@ if(isset($_POST["submit"])) {
                 echo "error: " . $sql . "<br>" . $e->getMessage();
             }
             $conn = null;
-            echo "Profile photo updated.<br>";
+            header("Location: ./index.php");
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
