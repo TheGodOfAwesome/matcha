@@ -307,8 +307,13 @@
                       $counter_action = "like back";
                       echo '
                       <li>
-                        <div class="media"> <a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
-                          <div class="media-body"> <a href="./profile.php?profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked your profile!</a></h6><a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" ><h2>Like ' . $log_creator . ' Back?</h2></a></div>
+                        <div class="media"> 
+                          <a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                            <div class="media-body"> 
+                              <a href="./profile.php?profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked your profile!</h6></a>
+                              <a href="inc/ignorelike.php?id=' . $log_id . '&profile=' . $log_creator . '" class="catg_title"><h6>Ignore like!</h6></a>
+                              <a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" ><h4>Like ' . $log_creator . ' Back?</h4></a>
+                            </div>
                         </div>
                       </li>';
                     } else if ($log_action == "likeback") {

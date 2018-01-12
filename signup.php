@@ -127,7 +127,7 @@ if (!empty($_POST['btnRegister'])) {
                         $stmt->execute();
                         $stmt_uploadprofilepic->execute();
 
-                        $matchestable = $name . "§matches";
+                        /*$matchestable = $name . "§matches";
 
                         echo $matchestable . "<br>";
 
@@ -146,7 +146,7 @@ if (!empty($_POST['btnRegister'])) {
                             $conn->exec($sql_creatematches);
                         } catch (PDOException $e) {
                             echo "error: " . $sql_creatematches . "<br>" . $e->getMessage();
-                        }
+                        }*/
 
                         echo "Your Confirmation link Has Been Sent To Your Email Address.";
                     } else {

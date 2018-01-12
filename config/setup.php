@@ -82,7 +82,7 @@ try {
 }
 
 
-$arr = array("Hokage", "Hinata", "Sasuke", "Sakura", "Shikamaru", "Temari", "Hatake", "rlee", "Tenten", "Ino", "Itachi", "KillerBee", "Jiraiya", "Gaara", "Kurenai", "Sai", "Rin", "Tsunade", "Karin");
+/*$arr = array("Hokage", "Hinata", "Sasuke", "Sakura", "Shikamaru", "Temari", "Hatake", "rlee", "Tenten", "Ino", "Itachi", "KillerBee", "Jiraiya", "Gaara", "Kurenai", "Sai", "Rin", "Tsunade", "Karin");
 reset($arr);
 while (list(, $name) = each($arr)) {
 	//echo "Value: $name<br />\n";
@@ -107,7 +107,7 @@ while (list(, $name) = each($arr)) {
 	}
 
 }
-echo "Matches created successfully <br>";
+echo "Matches created successfully <br>";*/
 
 $sql3 = "CREATE TABLE IF NOT EXISTS images ("
 	. "image_id int NOT NULL AUTO_INCREMENT,"
