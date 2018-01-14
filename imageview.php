@@ -89,6 +89,7 @@ if (!empty($_POST['btnDelete'])) {
           <div class="header_top_left">
             <ul class="top_nav">
               <li><a href="./feed.php">Home</a></li>
+              <li><a href="./notifications.php">Notifications</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>

@@ -56,7 +56,6 @@ if($name == "" || $email == "" || $status != "logged in")
               <li><a href="./feed.php">Home</a></li>
               <li><a href="./matches.php">Matches</a></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
-              <li><a href="./notifications.php">Notifications</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>
@@ -74,83 +73,62 @@ if($name == "" || $email == "" || $status != "logged in")
       <?php  
 
           $log_action_result = 0;
-          $stmt_log = $conn->prepare("SELECT * FROM log WHERE log_action_recipient_name=:log_action_recipient_name OR  
-          log_user_name=:log_user_name
-          ORDER BY log_timestamp DESC");
+          $stmt_log = $conn->prepare("SELECT * FROM log WHERE log_action_recipient_name=:log_action_recipient_name AND log_action_result=:log_action_result ORDER BY log_timestamp DESC");
           $stmt_log->bindValue(":log_action_recipient_name", $name);
-          $stmt_log->bindValue(":log_user_name", $name);
+          $stmt_log->bindValue(":log_action_result", $log_action_result);
           if ($stmt_log->execute()) {
             while ($row = $stmt_log->fetch(PDO::FETCH_ASSOC)) {
               $log_id = $row['log_id'];
               $log_action = $row['log_action'];
               $log_creator = $row['log_user_name'];
-              $log_action_recipient_name = $row['log_action_recipient_name'];
-
-                  //echo $log_id . '</br>';
-                  //echo $log_action . '</br>';
-                  //echo $log_creator . '</br>';
-                  //echo $log_action_recipient_name . '</br>';
 
                     /******************************************************************************** */
 
-                    
-
-                    /******************************************************************************** */
-
-                    if ($log_action == "likeback" && $log_creator != $name ) {
-                      
-                      $path = "./images/user_images/";
-                      $type = "profile";
-                      $stmt_notificationprofilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator AND image_type=:image_type ORDER BY image_timestamp DESC");
-                      $stmt_notificationprofilephoto->bindValue(":image_creator", $log_creator);
-                      $stmt_notificationprofilephoto->bindValue(":image_type", $type);
-                      // initialise an array for the results 
-                      $user_image = array();
-                      if ($stmt_notificationprofilephoto->execute()) {
-                        while ($row = $stmt_notificationprofilephoto->fetch(PDO::FETCH_ASSOC)) {
-                          $user_image[] = $row;
-                          $image_url = $row['image_name'];
-                          $url = $path . $image_url;
-                        }
+                    $path = "./images/user_images/";
+                    $type = "profile";
+                    $stmt_notificationprofilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator AND image_type=:image_type ORDER BY image_timestamp DESC");
+                    $stmt_notificationprofilephoto->bindValue(":image_creator", $log_creator);
+                    $stmt_notificationprofilephoto->bindValue(":image_type", $type);
+                    // initialise an array for the results 
+                    $user_image = array();
+                    if ($stmt_notificationprofilephoto->execute()) {
+                      while ($row = $stmt_notificationprofilephoto->fetch(PDO::FETCH_ASSOC)) {
+                        $user_image[] = $row;
+                        $image_url = $row['image_name'];
+                        $url = $path . $image_url;
                       }
-                      
+                    }
+
+                    /******************************************************************************** */
+
+                    If ($log_action == "like") {
+                      $counter_action = "like back";
                       echo '
-                        <div class="media"> <a href="./messages.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
-                          <div class="media-body"> <a href="./messages.php?id=' . $log_id . '&profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . '</h6><h2>Message ' . $log_creator . '</h2></a></div>
+                        <div class="media"> <a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                          <div class="media-body"> <a href="./profile.php?profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked your profile!</a></h6><a href="inc/likeback.php?id=' . $log_id . '&profile=' . $log_creator . '" ><h2>Like ' . $log_creator . ' Back?</h2></a></div>
+                        </div>
+                        ';
+                    } else if ($log_action == "likeback") {
+                      $counter_action = "message";
+                      echo '
+                        <div class="media"> <a href="inc/message.php?profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                          <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked you back!</h6><h2>Message ' . $log_creator . '</h2></a> </div>
                         </div>
                           ';
-                    }else if ($log_action == "likeback") {
-                      
-                      $path = "./images/user_images/";
-                      $type = "profile";
-                      $stmt_notificationprofilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator AND image_type=:image_type ORDER BY image_timestamp DESC");
-                      $stmt_notificationprofilephoto->bindValue(":image_creator", $log_action_recipient_name);
-                      $stmt_notificationprofilephoto->bindValue(":image_type", $type);
-                      // initialise an array for the results 
-                      $user_image = array();
-                      if ($stmt_notificationprofilephoto->execute()) {
-                        while ($row = $stmt_notificationprofilephoto->fetch(PDO::FETCH_ASSOC)) {
-                          $user_image[] = $row;
-                          $image_url = $row['image_name'];
-                          $url = $path . $image_url;
-                        }
-                      }
-
+                    } else if ($log_action == "messaged") {
+                      $counter_action = "message";
                       echo '
-                        <div class="media"> <a href="./messages.php?id=' . $log_id . '&profile=' . $log_action_recipient_name. '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
-                          <div class="media-body"> <a href="./messages.php?id=' . $log_id . '&profile=' . $log_action_recipient_name . '" class="catg_title"><h6>' . $log_action_recipient_name . '</h6><h2>Message ' . $log_action_recipient_name . '</h2></a></div>
+                        <div class="media"> <a href="inc/message.php?profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                          <div class="media-body"> <a href="inc/message.php?profile=' . $log_creator . '" class="catg_title">Message ' . $log_creator . ' Back</a> </div>
                         </div>
                           ';
                     }
-
                   }
                 }
               ?>
 
     </div>
   </section>
-  <p>&nbsp</p>
-
   <footer id="footer">
     <div class="footer_bottom">
       <p class="copyright">Copyright &copy; 2017 <a href="index.php">Matcha</a></p>

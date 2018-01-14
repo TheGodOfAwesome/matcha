@@ -78,6 +78,7 @@ if ($stmt_profile->execute()) {
               <li><a href="./feed.php">Home</a></li>
               <li><a href="./message.php">Messages</a></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
+              <li><a href="./notifications.php">Notifications</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>
@@ -114,21 +115,21 @@ if ($stmt_profile->execute()) {
               $interests = $_GET['interests'];
               $age = $_GET['age'];
               if ($sortby == ""){
-                echo "No sort </br>";
-                echo "sort:" . $sortby . "</br>";
-                echo "filtpop:" . $filtpop . "</br>";
-                echo "city:" . $city . "</br>";
-                echo "interests:" . $interests . "</br>";
-                echo "age:" . $age . "</br>";
+                //echo "No sort </br>";
+                //echo "sort:" . $sortby . "</br>";
+                //echo "filtpop:" . $filtpop . "</br>";
+                //echo "city:" . $city . "</br>";
+                //echo "interests:" . $interests . "</br>";
+                //echo "age:" . $age . "</br>";
                 $stmt_matches = $conn->prepare("SELECT * FROM users WHERE country=:country");
                 $stmt_matches->bindValue(":country", $user_country);
               } elseif($sortby !== ""){
-                echo "Sort </br>";
-                echo "sort:" . $sortby . "</br>";
-                echo "filtpop:" . $filtpop . "</br>";
-                echo "city:" . $city . "</br>";
-                echo "interests:" . $interests . "</br>";
-                echo "age:" . $age . "</br>";
+                //echo "Sort </br>";
+                //echo "sort:" . $sortby . "</br>";
+                //echo "filtpop:" . $filtpop . "</br>";
+                //echo "city:" . $city . "</br>";
+                //echo "interests:" . $interests . "</br>";
+                //echo "age:" . $age . "</br>";
                 if($sortby == "dateofbirth"){
                   $stmt_matches = $conn->prepare("SELECT * FROM users WHERE country=:country ORDER BY dateofbirth");
                 }else if($sortby == "city"){
