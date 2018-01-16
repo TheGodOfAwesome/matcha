@@ -398,8 +398,9 @@
           <div class="single_sidebar">
           <h2><span>Messages</span></h2>
           <ul class="spost_nav">
+          <div id="load_msgs">
           <?php  
-          $stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
+          /*$stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
           message_recepient_name=:message_recepient_name
           ORDER BY message_timestamp DESC LIMIT 4");
           $stmt_messages->bindValue(":message_sender_name", $name);
@@ -439,8 +440,8 @@
               }
             }
           }
-          ?>
-
+          */?>
+          </div>
           </ul>
           </div>
         </aside>
@@ -462,5 +463,10 @@
 <script src="assets/js/jquery.newsTicker.min.js"></script> 
 <script src="assets/js/jquery.fancybox.pack.js"></script> 
 <script src="assets/js/custom.js"></script>
+<script>
+  setInterval(function(){
+    $('#load_msgs').load("./inc/fetchmsgs.php").fadeIn("slow");
+  }, 8000);
+</script>
 </body>
 </html>
