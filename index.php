@@ -52,10 +52,12 @@ if (!empty($_POST['btnLogin'])) {
                     $name = $row['name'];
                     $id = $row['id'];
                     $loginstatus = "loggedin";
+                    $last_login_timestamp = date('Y-m-d H:i:s');
                     
-                    $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus
+                    $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus, last_login_timestamp=:last_login_timestamp
                     WHERE email=:email");
                     $stmt_status->bindParam(':loginstatus', $loginstatus);
+                    $stmt_status->bindParam(':last_login_timestamp', $last_login_timestamp);
                     $stmt_status->bindParam(':email', $email);
                     $stmt_status->execute();
 
@@ -84,10 +86,12 @@ if (!empty($_POST['btnLogin'])) {
                         $email = $row['email'];
                         $id = $row['id'];
                         $loginstatus = "loggedin";
-                        
-                        $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus
+                        $last_login_timestamp = date('Y-m-d H:i:s');
+                    
+                        $stmt_status = $conn->prepare("UPDATE users SET loginstatus=:loginstatus, last_login_timestamp=:last_login_timestamp
                         WHERE email=:email");
                         $stmt_status->bindParam(':loginstatus', $loginstatus);
+                        $stmt_status->bindParam(':last_login_timestamp', $last_login_timestamp);
                         $stmt_status->bindParam(':email', $email);
                         $stmt_status->execute();
 

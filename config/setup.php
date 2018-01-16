@@ -39,8 +39,8 @@ $sql2 = "CREATE TABLE IF NOT EXISTS users ("
 	. "status varchar(50),"
 	. "loginstatus varchar(10),"
 	. "confirmation_code varchar(255),"
-	. "lastseen timestamp,"
-	. "last_login_timestamp timestamp NOT NULL DEFAULT current_timestamp on update current_timestamp,"
+	. "lastseen timestamp NULL,"
+	. "last_login_timestamp timestamp NULL,"
 	. "PRIMARY KEY (id));";
 
 try {

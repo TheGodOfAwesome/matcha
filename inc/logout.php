@@ -15,12 +15,13 @@ if($name == "" || $email == "" || $status != "logged in")
     exit();
 }
 
-$lastseen = mktime();
+$lastseen = date('Y-m-d H:i:s');
 $loginstatus = "loggedout";
 
-$stmt_lastseen = $conn->prepare("UPDATE users SET loginstatus=:loginstatus
+$stmt_lastseen = $conn->prepare("UPDATE users SET loginstatus=:loginstatus, lastseen=:lastseen
 WHERE email=:email");
 $stmt_lastseen->bindParam(':loginstatus', $loginstatus);
+$stmt_lastseen->bindParam(':lastseen', $lastseen);
 $stmt_lastseen->bindParam(':email', $email);
 $stmt_lastseen->execute();
 
