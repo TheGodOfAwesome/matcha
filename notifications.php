@@ -23,7 +23,7 @@ if($name == "" || $email == "" || $status != "logged in")
 <!DOCTYPE html>
 <html>
 <head>
-<title>Matcha - Message</title>
+<title>Matcha - Notifications</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,6 +55,7 @@ if($name == "" || $email == "" || $status != "logged in")
             <ul class="top_nav">
               <li><a href="./feed.php">Home</a></li>
               <li><a href="./matches.php">Matches</a></li>
+              <li><a href="./message.php">Messages</a></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
@@ -67,13 +68,13 @@ if($name == "" || $email == "" || $status != "logged in")
     </div>
   </header>
   <section id="contentSection">
-    <h2>Chats</h2>
-    <div style="height:1000px; width:100%; overflow:auto; border:10px solid;">
-
+    <h2>Notifications</h2>
+    <div style="height:600px; width:100%; overflow:auto; border:10px solid;">
+      <div id="notify">
       <?php  
 
           $log_action_result = 0;
-          $stmt_log = $conn->prepare("SELECT * FROM log WHERE log_action_recipient_name=:log_action_recipient_name AND log_action_result=:log_action_result ORDER BY log_timestamp DESC");
+          $stmt_log = $conn->prepare("SELECT * FROM log WHERE log_action_recipient_name=:log_action_recipient_name AND log_action_result=:log_action_result ORDER BY log_id DESC");
           $stmt_log->bindValue(":log_action_recipient_name", $name);
           $stmt_log->bindValue(":log_action_result", $log_action_result);
           if ($stmt_log->execute()) {
@@ -126,9 +127,10 @@ if($name == "" || $email == "" || $status != "logged in")
                   }
                 }
               ?>
-
+      </div>
     </div>
   </section>
+  <p>&nbsp</p>
   <footer id="footer">
     <div class="footer_bottom">
       <p class="copyright">Copyright &copy; 2017 <a href="index.php">Matcha</a></p>
@@ -143,6 +145,10 @@ if($name == "" || $email == "" || $status != "logged in")
 <script src="./assets/js/jquery.li-scroller.1.0.js"></script> 
 <script src="./assets/js/jquery.newsTicker.min.js"></script> 
 <script src="./assets/js/jquery.fancybox.pack.js"></script> 
-<script src="./assets/js/custom.js"></script>
+<script src="./assets/js/custom.js"></script><script>
+  setInterval(function(){
+    $('#notify').load("./inc/fetchnotification.php").fadeIn("slow");
+  }, 8000);
+</script>
 </body>
 </html>

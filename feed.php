@@ -274,6 +274,7 @@
           <div class="latest_post_container">
             <div id="prev-button"><i class="fa fa-chevron-up"></i></div>
             <ul class="latest_postnav">
+              <div id="notify">
               <?php
                 $log_action_result = 0;
                 $stmt_log = $conn->prepare("SELECT * FROM log WHERE log_action_recipient_name=:log_action_recipient_name AND log_action_result=:log_action_result ORDER BY log_timestamp DESC");
@@ -337,6 +338,7 @@
                   }
                 }
               ?>
+              </div>
             </ul>
             <div id="next-button"><i class="fa  fa-chevron-down"></i></div>
           </div>
@@ -400,7 +402,7 @@
           <ul class="spost_nav">
           <div id="load_msgs">
           <?php  
-          /*$stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
+          $stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
           message_recepient_name=:message_recepient_name
           ORDER BY message_timestamp DESC LIMIT 4");
           $stmt_messages->bindValue(":message_sender_name", $name);
@@ -440,7 +442,7 @@
               }
             }
           }
-          */?>
+          ?>
           </div>
           </ul>
           </div>
@@ -465,6 +467,7 @@
 <script src="assets/js/custom.js"></script>
 <script>
   setInterval(function(){
+    $('#notify').load("./inc/fetchnotifications.php").fadeIn("slow");
     $('#load_msgs').load("./inc/fetchmsgs.php").fadeIn("slow");
   }, 8000);
 </script>

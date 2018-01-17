@@ -22,6 +22,52 @@ if($name == "" || $email == "" || $status != "logged in")
     exit();
 }
 
+
+$stmt_user = $conn->prepare("SELECT * FROM users WHERE name=:name");
+$stmt_user->bindValue(":name", $name);
+// initialise an array for the results 
+$user = array();
+if ($stmt_user->execute()) {
+    while ($row = $stmt_user->fetch(PDO::FETCH_ASSOC)) {
+        $user[] = $row;
+        $full_name = $row['fullname'];
+        $user_name = $row['name'];
+        $user_dob = $row['dateofbirth'];
+        $user_bio = $row['bio'];
+        $user_add = $row['address'];
+        $user_gender = $row['gender'];
+        $user_preference = $row['preference'];
+        $user_city = $row['city'];
+        $user_country = $row['country'];
+        $user_geo = $row['geolocation'];
+        $user_interests = $row['interests'];
+
+        //date is in yyyy/mm/dd format;
+        //explode the date to get month, day and year
+        $birthDate = explode("-", $user_dob);
+        //get age from date or birthdate
+        $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[1], $birthDate[2], $birthDate[0]))) > date("md")
+            ? ((date("Y") - $birthDate[0]) - 1)
+            : (date("Y") - $birthDate[0]));
+        $user_age = $age;
+
+        if ($user_bio == ""){
+            $user_bio = 'Please update your profile and add a <a href="./updateprofile.php">bio</a>!';
+        }
+        if ($user_city == ""){
+            $user_city = 'Please update your profile and add a <a href="./updateprofile.php">city</a>!';
+        }
+        if ($user_country == ""){
+            $user_country = 'Please update your profile and add a <a href="./updateprofile.php">country</a>!';
+        }
+        if ($user_dob == ""){
+            $user_age = 'Please update your profile and add a <a href="./updateprofile.php">date of birth</a>!';
+        } else {
+            
+        }
+    }
+}
+
 // check Update request
 if (!empty($_POST['btnUpdate'])) {
     if ($_POST['name'] == "" && $_POST['fname'] == "" && $_POST['lname'] == "" && $_POST['add'] == "" && $_POST['bio'] == "" && $_POST['interests'] == "" && $_POST['email'] == "" && ($_POST['date'] == "Date" && $_POST['month'] == "Month" && $_POST['year'] == "Year")) {
@@ -221,7 +267,7 @@ if (!empty($_POST['btnUpdate'])) {
                 <form action="updateprofile.php" method="post" class="contact_form">
                     <div class="form-group">
                         <label for="">Username</label>
-                        <input type="text" name="name" class="form-control" placeholder="JohnDoer"/>
+                        <input type="text" name="name" class="form-control" placeholder="<?php echo $user_name;?>"/>
                     </div>
                     <div class="form-group">
                         <label for="">First Name</label>

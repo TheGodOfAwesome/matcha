@@ -25,12 +25,13 @@ if($name == "" || $email == "" || $status != "logged in")
   $profile=$_GET['profile'];
   $id=$_GET['id'];
 //}
+$_SESSION['message_profile'] = $profile;
 
 // check Send Message request
 if (!empty($_POST['btnMessage'])) {
   $message = $_POST['message'];
-  $profile=$_POST['profile'];
-  $id=$_POST['id'];
+  $profile = $_POST['profile'];
+  $id = $_POST['id'];
   if ($message == "") {
     $message_error_message = 'Message field is required!';
     echo $register_error_message . "<br>";
@@ -102,7 +103,7 @@ if (!empty($_POST['btnMessage'])) {
   </header>
   <section id="contentSection">
     <h2>Messages</h2>
-    <div style="height:500px; width:100%; overflow:auto; border:10px solid;">
+    <div id="message_view" style="height:500px; width:100%; overflow:auto; border:10px solid;">
         <?php  
           $stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
           message_recepient_name=:message_recepient_name
@@ -117,7 +118,7 @@ if (!empty($_POST['btnMessage'])) {
               $message_sender_name = $row['message_sender_name'];
               $message_recepient_name = $row['message_recepient_name'];
 
-              if ($message_sender_name == $name ) {
+              if ($message_sender_name == $name && $message_recepient_name == $profile) {
                       
                 $path = "./images/user_images/";
                 $type = "profile";
@@ -205,5 +206,10 @@ if (!empty($_POST['btnMessage'])) {
 <script src="./assets/js/jquery.newsTicker.min.js"></script> 
 <script src="./assets/js/jquery.fancybox.pack.js"></script> 
 <script src="./assets/js/custom.js"></script>
+<script>
+  setInterval(function(){
+    $('#message_view').load("./inc/fetchconvo.php").fadeIn("slow");
+  }, 8000);
+</script>
 </body>
 </html>
