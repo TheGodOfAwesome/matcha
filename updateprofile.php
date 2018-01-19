@@ -22,6 +22,21 @@ if($name == "" || $email == "" || $status != "logged in")
     exit();
 }
 
+$ip = $_REQUEST['REMOTE_ADDR']; // the IP address to query
+$query = @unserialize(file_get_contents('http://ip-api.com/php/'.$ip));
+if($query && $query['status'] == 'success') {
+    $country = $query['country'];
+    $city = $query['city'];
+    $geo = $query['lat'] . "," . $query['lon'];
+}
+
+$stmt_location = $conn->prepare("UPDATE users SET city=:city, country=:country, geolocation=:geolocation 
+WHERE email=:email");
+$stmt_location->bindParam(':city', $city);
+$stmt_location->bindParam(':country', $country);
+$stmt_location->bindParam(':geolocation', $geo);
+$stmt_location->bindParam(':email', $email);
+$stmt_location->execute();
 
 $stmt_user = $conn->prepare("SELECT * FROM users WHERE name=:name");
 $stmt_user->bindValue(":name", $name);
@@ -156,7 +171,7 @@ if (!empty($_POST['btnUpdate'])) {
             if ($_POST['interests'] != "") {
                 //$stmt_hood = $conn->prepare("UPDATE users SET interests=:interests  CONCAT(preference, 
                 //WHERE email=:email");
-                $stmt_hood = $conn->prepare("UPDATE users SET interests = CONCAT(interests, ',', :interests) 
+                $stmt_hood = $conn->prepare("UPDATE users SET interests=:interests 
                 WHERE email=:email");
                 $stmt_hood->bindParam(':interests', $interests);
                 $stmt_hood->bindParam(':email', $email);
@@ -185,19 +200,34 @@ if (!empty($_POST['btnUpdate'])) {
             $externalIp = $m[1];
             $PublicIP = $externalIp;
 
-            $geolocation = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$PublicIP"));
-            $country = $geolocation["geoplugin_countryName"];
-            $city = $geolocation["geoplugin_city"];
+            //da9ddd4c7bba633cc4de71f115b283283f5528c861f80d7f963bfcf1b8b5300e
 
-            //echo "Ext IP " . $PublicIP . "</br>";
-            //echo "Country " . $country . "</br>";
-            //echo "City " . $city . "</br>";
+            //http://api.ipinfodb.com/v3/ip-city/?key=da9ddd4c7bba633cc4de71f115b283283f5528c861f80d7f963bfcf1b8b5300e&ip=74.125.45.100
+
+            //$geolocation = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$PublicIP"));
+            //http://ip-api.com/json/41.71.121.36
+
+
+            $ip = $_REQUEST['REMOTE_ADDR']; // the IP address to query
+            $query = @unserialize(file_get_contents('http://ip-api.com/php/'.$ip));
+            if($query && $query['status'] == 'success') {
+                //$geolocation = unserialize(file_get_contents("http://ip-api.com/json/" . $PublicIP));
+                $country = $query['country'];
+                $city = $query['city'];
+                $geo = $query['lat'] . "," . $query['lon'];
+            }
+
+
+            /*echo "Ext IP " . $PublicIP . "</br>";
+            echo "Country " . $country . "</br>";
+            echo "City " . $city . "</br>";
+            echo "Geo " . $geo . "</br>";*/
 
             $stmt_location = $conn->prepare("UPDATE users SET city=:city, country=:country, geolocation=:geolocation 
             WHERE email=:email");
             $stmt_location->bindParam(':city', $city);
             $stmt_location->bindParam(':country', $country);
-            $stmt_location->bindParam(':geolocation', $geolocation);
+            $stmt_location->bindParam(':geolocation', $geo);
             $stmt_location->bindParam(':email', $email);
             $stmt_location->execute();
 
@@ -245,9 +275,11 @@ if (!empty($_POST['btnUpdate'])) {
         <div class="header_top">
           <div class="header_top_left">
             <ul class="top_nav">
-              <li><a href="./feed.php">Home</a></li>
-              <li><a href="./notifications.php">Notifications</a></li>
-              <li><a href="./inc/logout.php">Logout</a></li>
+                <li><a href="./index.php">Home</a></li>
+                <li><a href="./matches.php">Matches</a></li>
+                <li><div id="msg"><?php include './inc/newmsgs.php';?></div></li>
+                <li><a href="./notifications.php"><div id="note"><?php include './inc/note.php';?></div></a></li>
+                <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>
           <div class="header_top_right">
@@ -410,5 +442,11 @@ if (!empty($_POST['btnUpdate'])) {
 <script src="./assets/js/jquery.newsTicker.min.js"></script> 
 <script src="./assets/js/jquery.fancybox.pack.js"></script> 
 <script src="./assets/js/custom.js"></script>
+<script>
+  setInterval(function(){
+    $('#msg').load("./inc/newmsgs.php").fadeIn("slow");
+    $('#note').load("./inc/notify.php").fadeIn("slow");
+  }, 8000);
+</script>
 </body>
 </html>

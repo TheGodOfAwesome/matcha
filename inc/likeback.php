@@ -33,6 +33,20 @@ if ($_GET['profile'] == "" &&  $_GET['id'] == "") {
     $stmt_likeback->bindParam(':log_action_recipient_name', $profile);
     $stmt_likeback->execute();
 
+    $stmt_checkrating = $conn->prepare("SELECT * FROM users
+    WHERE name=:name");
+    $stmt_checkrating->bindParam(':name', $profile);
+    $stmt_checkrating->execute();
+    $row = $stmt_checkrating->fetch(PDO::FETCH_ASSOC);
+    $rating = $row['rating'];
+    $rating = $rating + 1;
+
+    $stmt_updaterating = $conn->prepare("UPDATE users SET rating=:rating
+    WHERE name=:name;");
+    $stmt_updaterating->bindParam(':rating', $rating);
+    $stmt_updaterating->bindParam(':name', $profile);
+    $stmt_updaterating->execute();
+
     $log_description = "like";
     $log_action = "like";
     $log_action_result = 1;

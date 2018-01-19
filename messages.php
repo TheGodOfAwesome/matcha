@@ -107,7 +107,7 @@ if (!empty($_POST['btnMessage'])) {
         <?php  
           $stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
           message_recepient_name=:message_recepient_name
-          ORDER BY message_timestamp DESC");
+          ORDER BY message_id DESC");
           $stmt_messages->bindValue(":message_sender_name", $name);
           $stmt_messages->bindValue(":message_recepient_name", $name);
           if ($stmt_messages->execute()) {
@@ -157,6 +157,13 @@ if (!empty($_POST['btnMessage'])) {
                   }
                 }
                 
+                $read = 1;
+                $stmt_read = $conn->prepare("UPDATE messages SET chat_id=:chat_id
+                WHERE message_id=:message_id");
+                $stmt_read->bindParam(':chat_id', $read);
+                $stmt_read->bindParam(':message_id', $message_id);
+                $stmt_read->execute();
+
                 echo '
                   <div class="media"> <a href="" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
                     <div class="media-body"></h6>' . $message_text . '</h6></div>

@@ -32,6 +32,20 @@ if ($_GET['profile'] == "") {
     $stmt_like->bindParam(':log_action_recipient_name', $profile);
     $stmt_like->execute();
 
+    $stmt_checkrating = $conn->prepare("SELECT * FROM users
+    WHERE name=:name");
+    $stmt_checkrating->bindParam(':name', $profile);
+    $stmt_checkrating->execute();
+    $row = $stmt_checkrating->fetch(PDO::FETCH_ASSOC);
+    $rating = $row['rating'];
+    $rating = $rating + 1;
+
+    $stmt_updaterating = $conn->prepare("UPDATE users SET rating=:rating
+    WHERE name=:name;");
+    $stmt_updaterating->bindParam(':rating', $rating);
+    $stmt_updaterating->bindParam(':name', $profile);
+    $stmt_updaterating->execute();
+
     header("Location: ../feed.php");
     exit();
 }

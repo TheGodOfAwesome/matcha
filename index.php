@@ -24,8 +24,13 @@ if(!empty($_SESSION['name'])) {
 // check Login request
 if (!empty($_POST['btnLogin'])) {
     
-	$email = trim($_POST['email']);
+    $email = trim($_POST['email']);
+    $email = strip_tags($email);
+    $email = htmlspecialchars($email);
+
     $password = trim($_POST['password']);
+    $password = strip_tags($password);
+    $password = htmlspecialchars($password);
  
     if ($email == "") {
         $login_error_message = 'Email is required!';
@@ -51,6 +56,14 @@ if (!empty($_POST['btnLogin'])) {
                     $row = $stmt3->fetch();
                     $name = $row['name'];
                     $id = $row['id'];
+                    $dob = $row['dateofbirth'];
+                    $bio = $row['bio'];
+                    $add = $row['address'];
+                    $city = $row['city'];
+                    $country = $row['country'];
+                    $geo = $row['geolocation'];
+                    $interest = $row['interest'];
+                    $pref = $row['preference'];
                     $loginstatus = "loggedin";
                     $last_login_timestamp = date('Y-m-d H:i:s');
                     
@@ -65,7 +78,11 @@ if (!empty($_POST['btnLogin'])) {
                     $_SESSION['email'] = $email;
                     $_SESSION['id'] = $id;
                     $_SESSION['status'] = "logged in";
-                    header("Location: updateprofile.php");
+                    if($dob == "" || $bio == "" || $add == "" || $city == "" || $country == "" || $geo == "" || $interest == "" || $pref == ""){
+                        header("Location: updateprofile.php");
+                    }else{
+                        header("Location: feed.php");
+                    }
                 } else {
                     echo "Your account is not Activated! Check your email for activation link." . "<br>";
                 }
@@ -85,6 +102,14 @@ if (!empty($_POST['btnLogin'])) {
                         $row = $stmt5->fetch();
                         $email = $row['email'];
                         $id = $row['id'];
+                        $dob = $row['dateofbirth'];
+                        $bio = $row['bio'];
+                        $add = $row['address'];
+                        $city = $row['city'];
+                        $country = $row['country'];
+                        $geo = $row['geolocation'];
+                        $interest = $row['interest'];
+                        $pref = $row['preference'];
                         $loginstatus = "loggedin";
                         $last_login_timestamp = date('Y-m-d H:i:s');
                     
@@ -99,7 +124,11 @@ if (!empty($_POST['btnLogin'])) {
                         $_SESSION['email'] = $email;
                         $_SESSION['id'] = $id;
                         $_SESSION['status'] = "logged in";
-                        header("Location: updateprofile.php");
+                        if($dob == "" || $bio == "" || $add == "" || $city == "" || $country == "" || $geo == "" || $interest == "" || $pref == ""){
+                            header("Location: updateprofile.php");
+                        }else{
+                            header("Location: feed.php");
+                        }
                     } else {
                         echo "Your account is not Activated! Check your email for activation link." . "<br>";
                     }

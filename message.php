@@ -53,11 +53,11 @@ if($name == "" || $email == "" || $status != "logged in")
         <div class="header_top">
           <div class="header_top_left">
             <ul class="top_nav">
-              <li><a href="./feed.php">Home</a></li>
+              <li><a href="./index.php">Home</a></li>
               <li><a href="./matches.php">Matches</a></li>
-              <li><a href="./message.php">Messages</a></li>
+              <li><div id="msg"><?php include './inc/newmsgs.php';?></div></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
-              <li><a href="./notifications.php">Notifications</a></li>
+              <li><a href="./notifications.php"><div id="note"><?php include './inc/note.php';?></div></a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>
@@ -167,5 +167,11 @@ if($name == "" || $email == "" || $status != "logged in")
 <script src="./assets/js/jquery.newsTicker.min.js"></script> 
 <script src="./assets/js/jquery.fancybox.pack.js"></script> 
 <script src="./assets/js/custom.js"></script>
+<script>
+  setInterval(function(){
+    $('#msg').load("./inc/newmsgs.php").fadeIn("slow");
+    $('#note').load("./inc/notify.php").fadeIn("slow");
+  }, 8000);
+</script>
 </body>
 </html>

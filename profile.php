@@ -444,14 +444,16 @@
                 </div>
               </li>
               <li>
-                <div class="media wow fadeInDown"> 
+                <div class="media wow fadeInDown">
+                  <div id="logstatus"> 
                   <?php
                     if ($user_loginstatus == "loggedout"){
                       echo '<div class="media-body"><h2> Login Status: Logged Out </BR> </BR> Last Seen: '. $user_lastseen .'.</h2></div>';    
                     }else{
                       echo '<div class="media-body"><h2> Login Status: Logged In </h2></div>'; 
                     }
-                   ?>
+                  ?>
+                  </div>
                 </div>
               </li>
               <li>
@@ -485,5 +487,10 @@
 <script src="assets/js/jquery.newsTicker.min.js"></script> 
 <script src="assets/js/jquery.fancybox.pack.js"></script> 
 <script src="assets/js/custom.js"></script>
+<script>
+  setInterval(function(){
+    $('#logstatus').load("./inc/logstatus.php").fadeIn("slow");
+  }, 8000);
+</script>
 </body>
 </html>

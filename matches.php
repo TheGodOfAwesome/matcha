@@ -75,10 +75,10 @@ if ($stmt_profile->execute()) {
         <div class="header_top">
           <div class="header_top_left">
             <ul class="top_nav">
-              <li><a href="./feed.php">Home</a></li>
-              <li><a href="./message.php">Messages</a></li>
+              <li><a href="./index.php">Home</a></li>
+              <li><div id="msg"><?php include './inc/newmsgs.php';?></div></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
-              <li><a href="./notifications.php">Notifications</a></li>
+              <li><a href="./notifications.php"><div id="note"><?php include './inc/note.php';?></div></a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>
@@ -209,7 +209,7 @@ if ($stmt_profile->execute()) {
                       } else if ($age != "" && $user_age != $age){
                         $search_age = '%' . $age . '%';
                       } else {
-                        if ($user_preference == "" && $user_preference == "undefined"){
+                        if ($user_preference == "undefined"){
                           echo '
                           <div class="media"> <a href="./profile.php?profile=' . $match_name . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
                             <div class="media-body"> <a href="./profile.php?profile=' . $match_name . '" class="catg_title"><h6>' . $match_name . ' is a potential connection for you!</a></h6><a href="./profile.php?profile=' . $match_name . '" ><h2>View ' . $match_name . '</h2></a></div>
@@ -282,7 +282,7 @@ if ($stmt_profile->execute()) {
                       }
 
                       else {
-                        if ($user_preference == "" && $user_preference == "undefined"){
+                        if ($user_preference == "undefined"){
                           echo '
                           <div class="media"> <a href="./profile.php?profile=' . $match_name . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
                             <div class="media-body"> <a href="./profile.php?profile=' . $match_name . '" class="catg_title"><h6>' . $match_name . ' is a potential connection for you!</a></h6><a href="./profile.php?profile=' . $match_name . '" ><h2>View ' . $match_name . '</h2></a></div>
@@ -363,5 +363,11 @@ if ($stmt_profile->execute()) {
 <script src="./assets/js/jquery.newsTicker.min.js"></script> 
 <script src="./assets/js/jquery.fancybox.pack.js"></script> 
 <script src="./assets/js/custom.js"></script>
+<script>
+  setInterval(function(){
+    $('#msg').load("./inc/newmsgs.php").fadeIn("slow");
+    $('#note').load("./inc/notify.php").fadeIn("slow");
+  }, 8000);
+</script>
 </body>
 </html>

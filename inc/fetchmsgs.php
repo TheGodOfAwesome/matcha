@@ -17,6 +17,7 @@ if($name == "" || $email == "" || $status != "logged in")
     exit();
 }
 
+$read = 0;
 $stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
 message_recepient_name=:message_recepient_name
 ORDER BY message_timestamp DESC LIMIT 4");
@@ -25,12 +26,13 @@ $stmt_messages->bindValue(":message_recepient_name", $name);
 if ($stmt_messages->execute()) {
     while ($row = $stmt_messages->fetch(PDO::FETCH_ASSOC)) {
         $message_id = $row['message_id'];
+        $message_read = $row['chat_id'];
         $message_text = $row['message_text'];
         $message_timestamp = $row['message_timestamp'];
         $message_sender_name = $row['message_sender_name'];
         $message_recepient_name = $row['message_recepient_name'];
 
-       if ($message_sender_name != $name) {         
+       if ($message_sender_name != $name && $message_read == 0) {         
             $path = "./images/user_images/";
             $type = "profile";
             $stmt_notificationprofilephoto = $conn->prepare("SELECT * FROM images WHERE image_creator=:image_creator AND image_type=:image_type ORDER BY image_timestamp DESC");

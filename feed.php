@@ -56,9 +56,9 @@
             <ul class="top_nav">
               <li><a href="#">Home</a></li>
               <li><a href="./matches.php">Matches</a></li>
-              <li><a href="./message.php">Messages</a></li>
+              <li><div id="msg"><?php include './inc/newmsgs.php';?></div></li>
               <li><a href="./updateprofile.php">Edit Profile</a></li>
-              <li><a href="./notifications.php">Notifications</a></li>
+              <li><a href="./notifications.php"><div id="note"><?php include './inc/note.php';?></div></a></li>
               <li><a href="./inc/logout.php">Logout</a></li>
             </ul>
           </div>
@@ -139,8 +139,6 @@
                         : (date("Y") - $birthDate[0]));
                         $user_age = $age;
                       }
-
-                      
 
                       echo'<figcaption><h3>' . $full_name . ' : ' . $user_name . ' </h3></figcaption>
                       <p><h4>Bio : ' . $user_bio .' </h4></p>
@@ -322,8 +320,8 @@
                       $counter_action = "message";
                       echo '
                       <li>
-                        <div class="media"> <a href="./messages.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
-                          <div class="media-body"> <a href="./messages.php?id=' . $log_id . '&profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked you back!</h6><h2>Message ' . $log_creator . '</h2></a> </div>
+                        <div class="media"> <a href="inc/msgredirect.php?id=' . $log_id . '&profile=' . $log_creator . '" class="media-left"> <img src=" ' . $url . '" alt=""> </a>
+                          <div class="media-body"> <a href="inc/msgredirect.php?id=' . $log_id . '&profile=' . $log_creator . '" class="catg_title"><h6>' . $log_creator . ' liked you back!</h6><h2>Message ' . $log_creator . '</h2></a> </div>
                         </div>
                       </li>';
                     } else if ($log_action == "message") {
@@ -401,7 +399,7 @@
           <h2><span>Messages</span></h2>
           <ul class="spost_nav">
           <div id="load_msgs">
-          <?php  
+          <?php 
           $stmt_messages = $conn->prepare("SELECT * FROM messages WHERE message_sender_name=:message_sender_name OR  
           message_recepient_name=:message_recepient_name
           ORDER BY message_timestamp DESC LIMIT 4");
@@ -410,12 +408,13 @@
           if ($stmt_messages->execute()) {
             while ($row = $stmt_messages->fetch(PDO::FETCH_ASSOC)) {
               $message_id = $row['message_id'];
+              $message_read = $row['chat_id'];
               $message_text = $row['message_text'];
               $message_timestamp = $row['message_timestamp'];
               $message_sender_name = $row['message_sender_name'];
               $message_recepient_name = $row['message_recepient_name'];
 
-              if ($message_sender_name != $name) {
+              if ($message_sender_name != $name && $message_read == 0) {
                 
                 $path = "./images/user_images/";
                 $type = "profile";
@@ -467,6 +466,8 @@
 <script src="assets/js/custom.js"></script>
 <script>
   setInterval(function(){
+    $('#msg').load("./inc/newmsgs.php").fadeIn("slow");
+    $('#note').load("./inc/notify.php").fadeIn("slow");
     $('#notify').load("./inc/fetchnotifications.php").fadeIn("slow");
     $('#load_msgs').load("./inc/fetchmsgs.php").fadeIn("slow");
   }, 8000);
